@@ -77,4 +77,8 @@ Kenny :: worked on todo, flowchart
 Fabiha :: worked on todo, flowchart
 Jasper :: worked on todo, flowchart. Drew hard copy
 ==============================================================
-
+2017-1-11
+--------------------------------------------------------------
+Kenny :: worked on Version 0. Wrote Piece and types of Piece.
+Wrote rudimentary populate board and print board.
+==============================================================

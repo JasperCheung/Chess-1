@@ -1,0 +1,48 @@
+Chess - Fabiha Ahmed, Kenny Chen, Jasper Cheung
+APCS1 pd 5
+2017-01-11
+
+Chess TODO list
+
+Version 0: board
+1. write Piece and types of Piece (only toString)
+2. write Chess
+  a. populate board
+  b. print board
+
+Version 1: movements and attacks
+1. finish Piece and types of Piece
+  a. write other members (movements, attacks, getMovements(), getAttacks())
+  b. implement movements and attacks for types of pieces
+2. implement making moves in Chess
+
+Version 2: barebones chess
+1. Implement isLegalMove()
+2. Implement inCheck()
+3. Check if checkmate
+4. play()
+   a. Calls turn for each player
+   b. loops until checkmate
+5. turn()
+   a. Get user input (only coordinate of piece)
+   b. Check if valid coordinate
+   c. Check if has any legal moves
+   d. Gets user input again if both are true
+   e. Does move if the user input is legal
+
+Version 3: working chess
+1. Implement special moves (castling, en passant, pawn promotion)
+2. Check if draw (stalemate, threefold repetition, fifty-move rule, impossibility of checkmate) and put in play()
+
+Version 4: commands
+1. Implement commands
+   a. moveHistory (history)
+   b. takenPieces (pieces)
+   c. resign
+   d. draw
+   e. help (h, ?)
+   f. quit (q, exit, e)
+
+Version 5: variants
+1. Variants(Progressive chess, Chess960, Atomic chess, etc.)
+	

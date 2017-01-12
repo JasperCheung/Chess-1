@@ -10,6 +10,9 @@ Version 0: board
   a. populate board
   b. print board
 
+-------------------------------
+Next
+
 Version 1: movements and attacks
 1. finish Piece and types of Piece
   a. write other members (movements, attacks, getMovements(), getAttacks())

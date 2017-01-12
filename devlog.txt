@@ -6,23 +6,6 @@ pd 5
 ---------------------
 Chess
 
-
-Suggested usage: 
-* Replace all fields, angle brackets included, with specified info.
-  eg, pd <pd#> --> pd 3
-* Delete these instructions once all teammates understand usage.
-
-devlog--
-Use keyboard shortcut to jump to end,
- replicate entry template,
- modify appropriately.
-
-zone of reflection--
-Flesh out each category whenever necessary, appropriate.
- Need not be fully filled in until end of project,
- but best done as you go along.
-
-
 /////////// Zone of Reflection \\\\\\\\\\\
 ------------------------------------------
 OBSTACLES OVERCOME
@@ -61,24 +44,24 @@ tales of wisdom gained...
 
 2017-1-08
 --------------------------------------------------------------
-Kenny :: Worked on the proposal
-Fabiha :: Worked on the proposal
-Jasper :: Worked on the proposal
-==============================================================
+Kenny, Fabiha, Jasper :: Worked on the proposal
+
 2017-1-09
 --------------------------------------------------------------
-Kenny :: Revised proposal, Started UML
-Fabiha :: Revised proposal, Started UML
-Jasper :: Revised proposal, Started UML, Upload propasal.pdf 
-==============================================================
+Kenny, Fabiha, Jasper :: Revised proposal, UML
+
 2017-1-10
 --------------------------------------------------------------
-Kenny :: worked on todo, flowchart
-Fabiha :: worked on todo, flowchart
-Jasper :: worked on todo, flowchart. Drew hard copy
-==============================================================
+Kenny, Fabiha, Jasper :: worked on todo, flowchart
+
 2017-1-11
 --------------------------------------------------------------
 Kenny :: worked on Version 0. Wrote Piece and types of Piece.
 Wrote rudimentary populate board and print board.
+
+2017-1-12
+--------------------------------------------------------------
+Kenny :: Completed Version 0. completed populating board and printing board.
+Fabiha, Jasper :: worked on flowchart
+
 ==============================================================

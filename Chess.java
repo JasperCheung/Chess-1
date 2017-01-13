@@ -5,6 +5,8 @@ public class Chess {
 	board = new Piece[8][8];
 	populateBoard();
     }
+    
+    //Loops through the board/ [][] and populates
     private void populateBoard() {
 	for (int r = 0; r < 8; r++) {
 	    for (int c = 0; c < 8; c++) {
@@ -14,10 +16,14 @@ public class Chess {
     }
     // create 1 piece on board
     private void setBoardPiece(int r, int c) {
+   //if the cord given doesn't hit any spot on the board, set to empty space
+   //the a piece is still instantianted 
 	Piece p = null;
-        
+	
 	if (r == 0 || r == 7) {
-	    boolean color = r == 7; //white if r == 7
+	    // white = true, black = false
+	    boolean color = r == 7; //white if r == 7;
+	    
 	    if (c == 0 || c == 7)
 		p = new Rook(color);
 	    if (c == 1 || c == 6)
@@ -46,6 +52,7 @@ public class Chess {
 		    s += p + " ";
 		} else {
 		    //put white boxes ■ for empty squares
+		    //Warning: Boxes only works for unix terminal
 		    if ((r + c) % 2 == 0) {
 		        s += "■ ";
 		    } else {

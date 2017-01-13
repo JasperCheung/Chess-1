@@ -58,10 +58,12 @@ Kenny, Fabiha, Jasper :: worked on todo, flowchart
 --------------------------------------------------------------
 Kenny :: worked on Version 0. Wrote Piece and types of Piece.
 Wrote rudimentary populate board and print board.
+Jasper :: setting up devlog, work on flowchart
 
 2017-1-12
 --------------------------------------------------------------
 Kenny :: Completed Version 0. completed populating board and printing board.
 Fabiha, Jasper :: worked on flowchart
+Jasper :: added more comments, format
 
 ==============================================================

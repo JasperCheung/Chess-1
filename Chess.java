@@ -16,32 +16,32 @@ public class Chess {
     }
     // create 1 piece on board
     private void setBoardPiece(int r, int c) {
-   //if the cord given doesn't hit any spot on the board, set to empty space
-   //the a piece is still instantianted 
-	Piece p = null;
-	
+        if (r > 1 && r < 6)
+            return;
+        
+	Piece p;
+        
 	if (r == 0 || r == 7) {
 	    // white = true, black = false
-	    boolean color = r == 7; //white if r == 7;
-	    
+	    boolean color = r == 7;
+            
 	    if (c == 0 || c == 7)
 		p = new Rook(color);
-	    if (c == 1 || c == 6)
+	    else if (c == 1 || c == 6)
 		p = new Knight(color);
-	    if (c == 2 || c == 5)
+	    else if (c == 2 || c == 5)
 		p = new Bishop(color);
-	    if (c == 3)
+	    else if (c == 3)
 		p = new Queen(color);
-	    if (c == 4)
+	    else // c == 4
 		p = new King(color);
-	}
-	if (r == 1)
+            
+	} else if (r == 1)
 	    p = new Pawn(false);
-	if (r == 6)
+	else // r == 6
 	    p = new Pawn(true);
-	
-	if (p != null)
-	    board[r][c] = p;
+        
+        board[r][c] = p;
     }
     public void printBoard() {
 	for (int r = 0; r < 8; r++) {

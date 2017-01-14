@@ -36,10 +36,10 @@ public class Chess {
 	    else // c == 4
 		p = new King(color);
             
-	} else if (r == 1)
-	    p = new Pawn(false);
-	else // r == 6
-	    p = new Pawn(true);
+	} else { //r == 1 or 6
+            boolean color = r == 6;
+            p = new Pawn(color);
+        }
         
         board[r][c] = p;
     }
@@ -52,7 +52,7 @@ public class Chess {
 		    s += p + " ";
 		} else {
 		    //put white boxes ■ for empty squares
-		    //Warning: Boxes only works for unix terminal
+		    //Box should appear if the terminal supports Unicode characters
 		    if ((r + c) % 2 == 0) {
 		        s += "■ ";
 		    } else {

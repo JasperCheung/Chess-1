@@ -1,8 +1,7 @@
 public class King extends Piece {
     public King(boolean init) {
 	super(init);
-        createMovements();
-        attacks = movements;
+        name = "k";
     }
     
     protected void createMovements() {
@@ -21,12 +20,5 @@ public class King extends Piece {
         }
 
         movements = new Movement(OM);
-    }
-    
-    public String toString() {
-	if (white)
-	    return "K";
-	else
-	    return "k";
     }
 }

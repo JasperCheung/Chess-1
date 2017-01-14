@@ -1,8 +1,7 @@
 public class Knight extends Piece {
     public Knight(boolean init) {
 	super(init);
-        createMovements();
-        attacks = movements;
+        name = "n";
     }
 
     protected void createMovements() {
@@ -22,12 +21,5 @@ public class Knight extends Piece {
         }
 
         movements = new Movement(OM);
-    }
-    
-    public String toString() {
-	if (white)
-	    return "N";
-	else
-	    return "n";
     }
 }

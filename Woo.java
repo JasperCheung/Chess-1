@@ -9,6 +9,7 @@ public class Woo {
         *//* testing Movement
         King k = new King(true);
         System.out.println(Arrays.deepToString(k.getMovements().getOtherMov()));
+        System.out.println(Arrays.deepToString(k.getAttacks().getOtherMov()));
         
         Queen q = new Queen(true);
         System.out.println(Arrays.deepToString(q.getMovements().getOtherMov()));
@@ -18,7 +19,8 @@ public class Woo {
 
         Knight n = new Knight(true);
         System.out.println(Arrays.deepToString(n.getMovements().getOtherMov()));
-
+        System.out.println(Arrays.deepToString(n.getAttacks().getOtherMov()));
+        
         Rook r = new Rook(true);
         System.out.println(Arrays.deepToString(r.getMovements().getOtherMov()));
 

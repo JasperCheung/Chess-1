@@ -66,4 +66,17 @@ Kenny :: Completed Version 0. completed populating board and printing board.
 Fabiha, Jasper :: worked on flowchart
 Jasper :: added more comments, format
 
+2017-1-13
+--------------------------------------------------------------
+Kenny :: Implemented Version 1.1.
+Added class Movement and movements and attacks for pieces.
+
+2017-1-14
+--------------------------------------------------------------
+Kenny :: Reduced code duplication: Added String name for Piece, augmented Piece constructor.
+
+2017-1-??
+--------------------------------------------------------------
+
+
 ==============================================================

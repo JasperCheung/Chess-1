@@ -1,7 +1,7 @@
 public class Pawn extends Piece {
     public Pawn(boolean init) {
 	super(init);
-        createMovements();
+        name = "p";
         createAttacks();
     }
 
@@ -13,12 +13,5 @@ public class Pawn extends Piece {
         int[][] OM = { {-1, 1},
                        {1, 1}};
         attacks = new Movement(OM);
-    }
-    
-    public String toString() {
-	if (white)
-	    return "P";
-	else
-	    return "p";
     }
 }

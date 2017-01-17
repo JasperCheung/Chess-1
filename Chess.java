@@ -1,4 +1,7 @@
 public class Chess {
+    //board encoded as columns by rows
+    //to faciliate easy transfer between Chess coordinates and board
+    //(white left rook is (0, 0))
     private Piece[][] board;
 
     public Chess() {
@@ -10,12 +13,12 @@ public class Chess {
     private void populateBoard() {
 	for (int r = 0; r < 8; r++) {
 	    for (int c = 0; c < 8; c++) {
-		setBoardPiece(r, c);
+		setBoardPiece(c, r);
 	    }
 	}
     }
     // create 1 piece on board
-    private void setBoardPiece(int r, int c) {
+    private void setBoardPiece(int c, int r) {
         if (r > 1 && r < 6)
             return;
         
@@ -23,7 +26,7 @@ public class Chess {
         
 	if (r == 0 || r == 7) {
 	    // white = true, black = false
-	    boolean color = r == 7;
+	    boolean color = r == 0;
             
 	    if (c == 0 || c == 7)
 		p = new Rook(color);
@@ -37,11 +40,11 @@ public class Chess {
 		p = new King(color);
             
 	} else { //r == 1 or 6
-            boolean color = r == 6;
+            boolean color = r == 1;
             p = new Pawn(color);
         }
         
-        board[r][c] = p;
+        board[c][r] = p;
     }
 
     //complete a turn for a player
@@ -53,24 +56,27 @@ public class Chess {
 	//does move
     }
     public void doMove(int[] from, int[] to) {
-	//check if kill, and do stuff
-	//assume no kill for now, just swap
+	//check if kill, and do stuff?
+	//assume no kill for now, just move
 	
 	board[to[0]][to[1]] = board[from[0]][from[1]];
 	board[from[0]][from[1]] = null;
     }
 
     public void printBoard() {
-	for (int r = 0; r < 8; r++) {
+        //print the last (black) row first down to white
+	for (int r = 7; r > -1; r--) {
+            
+            //from each row print all the columns
 	    String s = "";
 	    for (int c = 0; c < 8; c++) {
-		Piece p = board[r][c];
+		Piece p = board[c][r];
 		if (p != null) {
 		    s += p + " ";
 		} else {
 		    //put white boxes ■ for empty squares
 		    //Box should appear if the terminal supports Unicode characters
-		    if ((r + c) % 2 == 0) {
+		    if ((r + c) % 2 == 1) {
 		        s += "■ ";
 		    } else {
 			s += "  ";

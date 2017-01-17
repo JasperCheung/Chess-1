@@ -6,7 +6,8 @@ public class Woo {
         /* testing toString
 	Queen q = new Queen(true);
 	System.out.println(q);
-        *//* testing Movement
+        */
+        /* testing Movement in pieces
         King k = new King(true);
         System.out.println(Arrays.deepToString(k.getMovements().getOtherMov()));
         System.out.println(Arrays.deepToString(k.getAttacks().getOtherMov()));
@@ -28,6 +29,22 @@ public class Woo {
         System.out.println(Arrays.deepToString(p.getMovements().getOtherMov()));
         System.out.println(Arrays.deepToString(p.getAttacks().getOtherMov()));
         */
+        /* testing doMove
+        Chess c = new Chess();
+        c.printBoard();
+
+	int[] from = {1, 1};
+	int[] to = {1, 2};
+	c.doMove(from, to);
+	c.printBoard();
+
+        from[0] = 0;
+        from[1] = 0;
+        to[0] = 0;
+        to[1] = 2;
+        c.doMove(from, to);
+        c.printBoard();
+        */
         
 	//Start
 	Chess c = new Chess();
@@ -36,10 +53,6 @@ public class Woo {
 	/*todo
 	play();
 	*/
-	int[] from = {1, 1};
-	int[] to = {2, 1};
-	c.doMove(from, to);
-
-	c.printBoard();
+        
     }
 }

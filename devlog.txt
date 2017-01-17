@@ -75,8 +75,13 @@ Added class Movement and movements and attacks for pieces.
 --------------------------------------------------------------
 Kenny :: Reduced code duplication: Added String name for Piece, augmented Piece constructor.
 
+2017-1-17
+--------------------------------------------------------------
+Jasper :: moved previous README.md to BrainStorm.md.
+Added project description and launch instructions to README.md.
+Kenny :: implemented making a move (Version 1.2)
+
 2017-1-??
 --------------------------------------------------------------
-
 
 ==============================================================

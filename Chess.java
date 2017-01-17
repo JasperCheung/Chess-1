@@ -43,6 +43,23 @@ public class Chess {
         
         board[r][c] = p;
     }
+
+    //complete a turn for a player
+    public void turn(boolean color) {
+	//get valid input from user: get coord
+	//check if valid coordinate: there is piece at coord?
+	//check if has legal moves
+	//gets input again for move
+	//does move
+    }
+    public void doMove(int[] from, int[] to) {
+	//check if kill, and do stuff
+	//assume no kill for now, just swap
+	
+	board[to[0]][to[1]] = board[from[0]][from[1]];
+	board[from[0]][from[1]] = null;
+    }
+
     public void printBoard() {
 	for (int r = 0; r < 8; r++) {
 	    String s = "";
@@ -62,5 +79,6 @@ public class Chess {
 	    }
 	    System.out.println(s);
 	}
+	System.out.println();
     }
 }

@@ -36,5 +36,10 @@ public class Woo {
 	/*todo
 	play();
 	*/
+	int[] from = {1, 1};
+	int[] to = {2, 1};
+	c.doMove(from, to);
+
+	c.printBoard();
     }
 }

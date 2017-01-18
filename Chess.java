@@ -9,6 +9,9 @@ public class Chess {
 	populateBoard();
     }
     
+    public Piece[][] getBoard(){
+	return board;
+    }
     //Loops through the board/ [][] and populates
     private void populateBoard() {
 	for (int r = 0; r < 8; r++) {
@@ -63,28 +66,4 @@ public class Chess {
 	board[from[0]][from[1]] = null;
     }
 
-    public void printBoard() {
-        //print the last (black) row first down to white
-	for (int r = 7; r > -1; r--) {
-            
-            //from each row print all the columns
-	    String s = "";
-	    for (int c = 0; c < 8; c++) {
-		Piece p = board[c][r];
-		if (p != null) {
-		    s += p + " ";
-		} else {
-		    //put white boxes ■ for empty squares
-		    //Box should appear if the terminal supports Unicode characters
-		    if ((r + c) % 2 == 1) {
-		        s += "■ ";
-		    } else {
-			s += "  ";
-		    }
-		}
-	    }
-	    System.out.println(s);
-	}
-	System.out.println();
-    }
 }

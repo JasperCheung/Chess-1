@@ -1,6 +1,6 @@
 //for testing printing arrays
 //import java.util.Arrays;
-import cs1.Keyboard;
+
 public class Woo {
     public static void main(String[] args) {
         /* testing toString
@@ -47,14 +47,14 @@ public class Woo {
         */
         
 	//Start
-	ChessBoard che = new ChessBoard(5,9);
+	ChessBoard che = new ChessBoard(5,7);
 	Chess c = new Chess();
 	//che.printBoard();//empty board
-	che.addPieces(c.getBoard());
-	che.printBoard();
+	//che.addPieces(c.getBoard());
+	che.printBoard(c.getBoard());
 	
 	/*todo
-	play();
+	c.play();
 	*/
         
     }

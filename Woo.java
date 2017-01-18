@@ -45,7 +45,17 @@ public class Woo {
         c.doMove(from, to);
         c.printBoard();
         */
-        
+        /* testing possibleMovement()
+	Chess c = new Chess();
+	c.printBoard();
+	int[] from = {3, 0};
+	int[] to = {3, 2};
+	c.doMove(from, to);
+	c.printBoard();
+
+	System.out.println(Arrays.deepToString(c.possibleMovement(to).toArray()));
+	*/
+
 	//Start
 	ChessBoard che = new ChessBoard(5,9);
 	Chess c = new Chess();

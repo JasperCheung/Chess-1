@@ -17,10 +17,10 @@ public class Movement {
     public int[][] getOtherMov() {
         return otherMov;
     }
-    public boolean getHorizVert() {
+    public boolean isHorizVert() {
         return horizVert;
     }
-    public boolean getDiags() {
+    public boolean isDiags() {
         return diags;
     }
 }

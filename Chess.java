@@ -53,10 +53,26 @@ public class Chess {
     //complete a turn for a player
     public void turn(boolean color) {
 	//get valid input from user: get coord
-	//check if valid coordinate: there is piece at coord?
-	//check if has legal moves
+	//check if valid coordinate: there is own piece at coord?
 	//gets input again for move
-	//does move
+	//check if legal move
+	//does move if legal
+    }
+    public boolean isLegalMove(int[] from, int[] to) {
+	//is possible move (using Movement) 
+	//and then do move (if attack, then keep track of attacked movement)
+	//if own king in check -> not legal
+	//undo move
+	
+	//know movement or attack
+	//movement: for loop for horiz/vert/diag movement
+	//stop when end of board or find piece (don't take)
+	//attack: same as movement except can take piece
+    }
+    public boolean inCheck(boolean color) {
+	//go through all pieces of other player
+	//if they can attack own king -> in check
+	
     }
     public void doMove(int[] from, int[] to) {
 	//check if kill, and do stuff?

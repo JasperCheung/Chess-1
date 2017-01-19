@@ -57,11 +57,11 @@ public class Woo {
 	*/
         
 	//Start
-	ChessBoard che = new ChessBoard(5,7);
+	ChessBoard che = new ChessBoard();
 	Chess c = new Chess();
-	//che.printBoard();//empty board
+	che.printBoard(c.getBoard(),5,7);//empty board
 	//che.addPieces(c.getBoard());
-	che.printBoard(c.getBoard());
+	//che.printBoard(c.getBoard());
 	
 	/*todo
 	c.play();

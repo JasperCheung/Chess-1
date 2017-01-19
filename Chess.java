@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.*;
 public class Chess {
     //board encoded as columns by rows
     //to faciliate easy transfer between Chess coordinates and board
@@ -65,11 +65,6 @@ public class Chess {
 	//and then do move (if attack, then keep track of attacked movement)
 	//if own king in check -> not legal
 	//undo move
-	
-	//know movement or attack
-	//movement: for loop for horiz/vert/diag movement
-	//stop when end of board or find piece (don't take)
-	//attack: same as movement except can take piece
 	return true;
     }
     public boolean inCheck(boolean color) {
@@ -78,63 +73,90 @@ public class Chess {
 	return true;
     }
     public void doMove(int[] from, int[] to) {
-	//check if kill, and do stuff?
-	//assume no kill for now, just move
-	
 	board[to[0]][to[1]] = board[from[0]][from[1]];
 	board[from[0]][from[1]] = null;
     }
     //get possible movement from coordinate (piece)
     //stop when hit piece or end of border
-    //left/right change x; up/down change y; diags change both x and y
-    public ArrayList<int[]> possibleMovement(int[] coord) {
+    public List<int[]> posMovement(int[] coord) {
 	Piece p = board[coord[0]][coord[1]];
 	Movement m = p.getMovements();
 
-	ArrayList<int[]> posMovement = new ArrayList<int[]>();
+        List<int[]> posMovs = new ArrayList<int[]>();
 
+        List<int[]> differences = new ArrayList<int[]>();
+        //add horizVert differences
 	if (m.isHorizVert()) {
-	    //add horiz movements
-	    posMovement.addAll(possibleMovement(coord, -1, 0));
-	    posMovement.addAll(possibleMovement(coord, 1, 0));
-
-	    //add vert movements
-	    posMovement.addAll(possibleMovement(coord, 0, -1));
-	    posMovement.addAll(possibleMovement(coord, 0, 1));
+            int[][] differenceHV = { {-1, 0}, {1, 0},   //horiz
+                                     {0, -1}, {0, 1} }; //vert
+            differences.addAll(Arrays.asList(differenceHV));
 	}
-
-	//add diag movements
+	//add diags differences
 	if (m.isDiags()) {
-	    posMovement.addAll(possibleMovement(coord, -1, -1));
-	    posMovement.addAll(possibleMovement(coord, -1, 1));
-	    posMovement.addAll(possibleMovement(coord, 1, -1));
-	    posMovement.addAll(possibleMovement(coord, 1, 1));
+            int[][] differenceD = { {-1, -1}, {-1, 1},
+                                    {1, -1}, {1, 1} };
+            differences.addAll(Arrays.asList(differenceD));
 	}
+        //add all possible movements for horiz/vert/diags
+        for (int[] diffxy : differences)
+            posMovement(coord, posMovs, diffxy[0], diffxy[1]);
 
-	return posMovement;
+        //add other movements
+        for (int[] move : m.getOtherMov()) {
+            int atX = coord[0] + move[0];
+            int atY = coord[1] + move[1];
+            checkAddPosMovement(coord, posMovs, atX, atY); //if fails, continue
+        }
+        
+	return posMovs;
     }
-    public ArrayList<int[]> possibleMovement(int[] coord, int dx, int dy) {
-	ArrayList<int[]> posMovement = new ArrayList<int[]>();
-	int x = 0;
-	int y = 0;
+    //add possible movements given a dx and dy (for horiz/vert/diags)
+    public void posMovement(int[] coord, List<int[]> posMovs, int dx, int dy) {
+	int atX = coord[0];
+	int atY = coord[1];
 	for (;;) {
-	    x += dx;
-	    y += dy;
-	    //exact coord
-	    int atX = coord[0] + x;
-	    int atY = coord[1] + y;
-	    if (atX < 0 || atX > 7 || atY < 0 || atY > 7)
-		break;
-
-	    Piece at = board[atX][atY];
-	    if (at != null) // piece here
-		break;
-	    else {
-		int[] atCoord = {atX, atY};
-		posMovement.add(atCoord);
-	    }
+	    atX += dx;
+	    atY += dy;
+	    if (!checkAddPosMovement(coord, posMovs, atX, atY)) //failed; stop
+                break;
 	}
-	return posMovement;
     }
-
+    //try to add possible move given coordinates. true if successful
+    public boolean checkAddPosMovement(int[] coord, List<int[]> posMovs, int x, int y) {
+        if (x < 0 || x > 7 || y < 0 || y > 7)
+            return false;
+        
+        Piece at = board[x][y];
+        if (at != null) // piece here
+            return false;
+        
+        int[] atCoord = {x, y};
+        posMovs.add(atCoord);
+        return true;
+        }
+    
+    public void printBoard() {
+        //print the last (black) row first down to white
+	for (int r = 7; r > -1; r--) {
+            
+            //from each row print all the columns
+	    String s = "";
+	    for (int c = 0; c < 8; c++) {
+		Piece p = board[c][r];
+		if (p != null) {
+		    s += p + " ";
+		} else {
+		    //put white boxes ■ for empty squares
+		    //Box should appear if the terminal supports Unicode characters
+		    if ((r + c) % 2 == 1) {
+		        s += "■ ";
+		    } else {
+			s += "  ";
+		    }
+		}
+	    }
+	    System.out.println(s);
+	}
+	System.out.println();
+    }
 }

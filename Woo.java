@@ -49,13 +49,13 @@ public class Woo {
 	Chess c = new Chess();
 	c.printBoard();
 	int[] from = {3, 0};
-	int[] to = {3, 2};
+	int[] to = {3, 3};
 	c.doMove(from, to);
 	c.printBoard();
 
-	System.out.println(Arrays.deepToString(c.possibleMovement(to).toArray()));
+	System.out.println(Arrays.deepToString(c.posMovement(to).toArray()));
 	*/
-
+        
 	//Start
 	ChessBoard che = new ChessBoard(5,7);
 	Chess c = new Chess();

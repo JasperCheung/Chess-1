@@ -9,7 +9,10 @@ public class Movement {
         this(initOM, false, false);
     }
     public Movement(int[][] initOM, boolean hv, boolean d) {
-        otherMov = initOM;
+        if (initOM == null)
+            otherMov = new int[0][0];
+        else
+            otherMov = initOM;
         horizVert = hv;
         diags = d;
     }

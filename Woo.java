@@ -1,26 +1,11 @@
 //for testing printing arrays
 //import java.util.Arrays;
-import cs1.Keyboard;
-
 public class Woo {
     public static void main(String[] args) {
 	//Start
 	Chess c = new Chess();
-	c.printBoard();
-	
-	//play
-	System.out.println("Please input cords xy: ");
-	int[] from = new int[2];
-	int[] to = new int[2];
-	String cords =  Keyboard.readString();
-	from[0] =  Character.getNumericValue(cords.charAt(0));
-	from[1] = Character.getNumericValue(cords.charAt(1));
-	to[0] = Character.getNumericValue(cords.charAt(2));
-	to[1] = Character.getNumericValue(cords.charAt(3));
-
-	c.doMove(from,to);
-	c.printBoard();
-
+        c.play();
+        
         /* testing toString
 	Queen q = new Queen(true);
 	System.out.println(q);
@@ -99,6 +84,10 @@ public class Woo {
 	System.out.println(c.checkAddLegalMove(from, to));
 	c.printBoard();
 	*/
+	/* test turn()
+        c.turn(true);
+        c.printBoard();
+        */
         
     }
 }

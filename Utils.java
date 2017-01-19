@@ -1,5 +1,30 @@
 public class Utils {
+    private static final String letters = "abcdefgh";
+    private static final String numbers = "12345678";
 
+    //return true if valid coordinate
+    public static boolean validCoordinate(String coord) {
+        String xStr = coord.substring(0, 1);
+        String yStr = coord.substring(1, 2);
+        
+        return letters.contains(xStr) && numbers.contains(yStr);
+    }
+    
+    //get coord, return corresponding int[]
+    //assume coord is valid
+    public static int[] coordToInts(String coord) {
+        int[] ret = new int[2];
+        ret[0] = stringToNum(coord.substring(0, 1));
+        ret[1] = stringToNum(coord.substring(1, 2));
+        return ret;
+    }
+    //assume s is valid
+    public static int stringToNum(String s) {
+        if (letters.contains(s))
+            return letters.indexOf(s);
+        return numbers.indexOf(s);
+    }
+    
     //prints board
     public static void printBoard(Piece[][] board, int length, int width) {
 	String clr = " ";//white or black square
@@ -61,6 +86,8 @@ public class Utils {
 		else System.out.print(" ");
 	    }
 	}
+        
+        System.out.println();
     }
 
 }

@@ -1,4 +1,6 @@
 import java.util.*;
+import cs1.Keyboard;
+
 public class Chess {
     //board encoded as columns by rows (x by y)
     //to faciliate easy transfer between Chess coordinates and board
@@ -51,14 +53,59 @@ public class Chess {
         
         board[x][y] = p;
     }
-
+    public void play() {
+        //keep changing players until checkmated
+        //also announce when player is checked (and checkmated)
+        for (boolean color = true; ; color = !color) {
+            printBoard();
+            String s;
+            if (color)
+                s = "White";
+            else
+                s = "Black";
+            System.out.println(s + "'s turn:");
+            turn(color);
+            System.out.println();
+        }
+    }
     //complete a turn for a player
     public void turn(boolean color) {
-	//get valid input from user: get coord
-	//check if valid coordinate: there is own piece at coord?
-	//gets input again for move
-	//check if legal move
-	//does move if legal
+        for (;;) {
+            //get coordinate input from user
+            System.out.print("Enter coordinate of piece:\t");
+            String coord = Keyboard.readString();
+        
+            //check if valid coordinate && there is own piece at coord
+            if (coord.length() != 2 || !Utils.validCoordinate(coord)) {
+                System.out.println("Invalid coordinates");
+                continue;
+            }
+            int[] from = Utils.coordToInts(coord);
+            
+            Piece p = board[from[0]][from[1]];
+            if (p == null || p.isWhite() != color) {
+                System.out.println("Invalid piece at coordinate");
+                continue;
+            }
+            System.out.print(p + " at " + coord.substring(0, 1) + coord.substring(1, 2));
+            
+            //get input again for move
+            System.out.print("\nEnter move:\t");
+            String move = Keyboard.readString();
+
+            //check if valid coordinate
+            if (move.length() != 2 || !Utils.validCoordinate(move)) {
+                System.out.println("Invalid coordinates of move");
+                continue;
+            }
+            int[] to = Utils.coordToInts(move);
+            
+            //does move if legal, otherwise repeat
+            if (checkAddLegalMove(from, to))
+                break;
+            else
+                System.out.println("Invalid move");
+        }
     }
     //does move and return true if legal
     //undoes move and return false if illegal;

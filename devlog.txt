@@ -81,7 +81,10 @@ Jasper :: moved previous README.md to BrainStorm.md.
 Added project description and launch instructions to README.md.
 Kenny :: implemented making a move (Version 1.2)
 
-2017-1-??
+2017-1-18
 --------------------------------------------------------------
+Jasper,Kenny, Fabiha :: Legal movechecking discussion, further 
+planning
+Jasper :: Barebones user input
 
 ==============================================================

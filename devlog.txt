@@ -86,5 +86,14 @@ Kenny :: implemented making a move (Version 1.2)
 Jasper,Kenny, Fabiha :: Legal movechecking discussion, further 
 planning
 Jasper :: Barebones user input
+Kenny :: implement getting possible moves, implement inCheck()
+
+2017-1-19
+--------------------------------------------------------------
+Kenny :: implement checkAddLegalMove()
+Fabiha :: printBoard in Utils
+
+2017-1-??
+--------------------------------------------------------------
 
 ==============================================================

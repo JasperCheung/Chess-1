@@ -45,7 +45,7 @@ public class Woo {
         c.doMove(from, to);
         c.printBoard();
         */
-        /* testing possibleMovement()
+        /* testing posMove()
 	Chess c = new Chess();
 	c.printBoard();
 	int[] from = {3, 0};
@@ -53,8 +53,17 @@ public class Woo {
 	c.doMove(from, to);
 	c.printBoard();
 
-	System.out.println(Arrays.deepToString(c.posMovement(to).toArray()));
-	*/
+	System.out.println(Arrays.deepToString(c.posMove(to, false).toArray()));
+
+        from[0] = 2;
+        from[1] = 1;
+        to[0] = 2;
+        to[1] = 5;
+        c.doMove(from, to);
+	c.printBoard();
+
+	System.out.println(Arrays.deepToString(c.posMove(to, true).toArray()));
+        */
         
 	//Start
 	ChessBoard che = new ChessBoard(5,7);

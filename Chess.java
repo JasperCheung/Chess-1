@@ -76,13 +76,16 @@ public class Chess {
 	board[to[0]][to[1]] = board[from[0]][from[1]];
 	board[from[0]][from[1]] = null;
     }
-    //get possible movement from coordinate (piece)
-    //stop when hit piece or end of border
-    public List<int[]> posMovement(int[] coord) {
+    //get possible move from coordinate (piece) (either movement or attack)
+    //for movement: stop when hit piece or end of border
+    //for attack: only include when hit piece
+    public List<int[]> posMove(int[] coord, boolean attack) {
 	Piece p = board[coord[0]][coord[1]];
 	Movement m = p.getMovements();
-
-        List<int[]> posMovs = new ArrayList<int[]>();
+        if (attack && p.getMovements() != p.getAttacks())  //movements and attacks don't point to same
+            m = p.getAttacks();
+        
+        List<int[]> posMoves = new ArrayList<int[]>();
 
         List<int[]> differences = new ArrayList<int[]>();
         //add horizVert differences
@@ -99,39 +102,49 @@ public class Chess {
 	}
         //add all possible movements for horiz/vert/diags
         for (int[] diffxy : differences)
-            posMovement(coord, posMovs, diffxy[0], diffxy[1]);
+            posMove(coord, posMoves, diffxy[0], diffxy[1], attack);
 
         //add other movements
         for (int[] move : m.getOtherMov()) {
             int atX = coord[0] + move[0];
             int atY = coord[1] + move[1];
-            checkAddPosMovement(coord, posMovs, atX, atY); //if fails, continue
+            checkAddPosMove(coord, posMoves, atX, atY, attack); //keep checking no matter return boolean
         }
         
-	return posMovs;
+	return posMoves;
     }
     //add possible movements given a dx and dy (for horiz/vert/diags)
-    public void posMovement(int[] coord, List<int[]> posMovs, int dx, int dy) {
+    public void posMove(int[] coord, List<int[]> posMoves, int dx, int dy, boolean attack) {
 	int atX = coord[0];
 	int atY = coord[1];
 	for (;;) {
 	    atX += dx;
 	    atY += dy;
-	    if (!checkAddPosMovement(coord, posMovs, atX, atY)) //failed; stop
+	    if (!checkAddPosMove(coord, posMoves, atX, atY, attack)) //false, don't check anymore
                 break;
 	}
     }
-    //try to add possible move given coordinates. true if successful
-    public boolean checkAddPosMovement(int[] coord, List<int[]> posMovs, int x, int y) {
+    //try to add possible move given coordinates.
+    //return false if out of border or there was piece there
+    public boolean checkAddPosMove(int[] coord, List<int[]> posMoves, int x, int y, boolean attack) {
         if (x < 0 || x > 7 || y < 0 || y > 7)
             return false;
         
         Piece at = board[x][y];
-        if (at != null) // piece here
+        if (at != null) { // piece there
+            if (attack) {
+                Piece here = board[coord[0]][coord[1]];
+                if (at.isWhite() != here.isWhite()) { //different colors
+                    int[] atCoord = {x, y};
+                    posMoves.add(atCoord);
+                }
+            }
             return false;
-        
-        int[] atCoord = {x, y};
-        posMovs.add(atCoord);
+        }
+        if (!attack) {
+            int[] atCoord = {x, y};
+            posMoves.add(atCoord);
+        }
         return true;
         }
     

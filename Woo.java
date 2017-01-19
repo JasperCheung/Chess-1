@@ -20,7 +20,7 @@ public class Woo {
 
 	c.doMove(from,to);
 	c.printBoard();
-    
+
         /* testing toString
 	Queen q = new Queen(true);
 	System.out.println(q);

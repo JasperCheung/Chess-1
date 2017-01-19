@@ -219,27 +219,6 @@ public class Chess {
         }
     
     public void printBoard() {
-        //print the last (black) row first down to white
-	for (int y = 7; y > -1; y--) {
-            
-            //from each row print all the columns
-	    String s = "";
-	    for (int x = 0; x < 8; x++) {
-		Piece p = board[x][y];
-		if (p != null) {
-		    s += p + " ";
-		} else {
-		    //put white boxes ■ for empty squares
-		    //Box should appear if the terminal supports Unicode characters
-		    if ((y + x) % 2 == 1) {
-		        s += "■ ";
-		    } else {
-			s += "  ";
-		    }
-		}
-	    }
-	    System.out.println(s);
-	}
-	System.out.println();
+        Utils.printBoard(board, 3, 5);
     }
 }

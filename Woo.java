@@ -5,11 +5,7 @@ import cs1.Keyboard;
 public class Woo {
     public static void main(String[] args) {
 	//Start
-	//ChessBoard che = new ChessBoard(5,7);
 	Chess c = new Chess();
-	//che.printBoard();//empty board
-	//che.addPieces(c.getBoard());
-	//che.printBoard(c.getBoard());
 	c.printBoard();
 	
 	//play
@@ -24,9 +20,6 @@ public class Woo {
 
 	c.doMove(from,to);
 	c.printBoard();
-	    
-	
-	    
     
         /* testing toString
 	Queen q = new Queen(true);
@@ -55,9 +48,6 @@ public class Woo {
         System.out.println(Arrays.deepToString(p.getAttacks().getOtherMov()));
         */
         /* testing doMove
-        Chess c = new Chess();
-        c.printBoard();
-
 	int[] from = {1, 1};
 	int[] to = {1, 2};
 	c.doMove(from, to);
@@ -90,8 +80,6 @@ public class Woo {
 	System.out.println(Arrays.deepToString(c.posMove(to[0], to[1], true).toArray()));
         */
         /* testing inCheck()
-        Chess c = new Chess();
-        c.printBoard();
         int[] from = {3, 1};
         int[] to = {3, 6};
         c.doMove(from, to);
@@ -100,9 +88,17 @@ public class Woo {
         System.out.println(Arrays.deepToString(c.posMove(3, 6, true).toArray()));
         System.out.println(c.inCheck(false));
         */
+	/* testing islegalMove()
+	int[] from = {3, 1};
+	int[] to = {3, 5};
+	c.doMove(from, to);
+	c.printBoard();
 
-
-
+	from[0] = 3; from[1] = 5;
+	to[0] = 4; to[1] = 6;
+	System.out.println(c.checkAddLegalMove(from, to));
+	c.printBoard();
+	*/
         
     }
 }

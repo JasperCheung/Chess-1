@@ -60,12 +60,33 @@ public class Chess {
 	//check if legal move
 	//does move if legal
     }
-    public boolean isLegalMove(int[] from, int[] to) {
-	//is possible move (using Movement) 
+    //does move and return true if legal
+    //undoes move and return false if illegal;
+    public boolean checkAddLegalMove(int[] from, int[] to) {
+	//is possible move
+	boolean movement = contains(posMoves(from[0], from[1], false), to);
+	boolean attack = contains(posMoves(from[0], from[1], true), to);
+	if (!movement && !attack)
+	    return false;
+	
 	//and then do move (if attack, then keep track of attacked movement)
-	//if own king in check -> not legal
-	//undo move
-	return true;
+
+	Piece pieceFrom = board[from[0]][from[1]];
+	Piece killed = board[to[0]][to[1]];  //used only for attack
+	doMove(from, to);
+
+	//if own king not in check -> legal
+	if (!inCheck(pieceFrom.isWhite()))
+	    return true;
+
+	//undo move (illegal)
+	if (movement)
+	    doMove(to, from);
+	else {
+	    doMove(to, from);
+	    board[to[0]][to[1]] = killed;
+	}
+	return false;
     }
     public boolean inCheck(boolean color) {
         //get coordinate of king
@@ -91,7 +112,7 @@ public class Chess {
                 if (board[x][y] == null)
                     continue;
                 Piece p = board[x][y];
-                if (p.isWhite() != color && contains(posMove(x, y, true), (kingCoord)))
+                if (p.isWhite() != color && contains(posMoves(x, y, true), (kingCoord)))
                     return true;
             }
         }
@@ -128,7 +149,7 @@ public class Chess {
     //for movement: stop when hit piece or end of border
     //for attack: only include when hit piece
     //returns list of absolute coordinates
-    public List<int[]> posMove(int xCoord, int yCoord, boolean attack) {
+    public List<int[]> posMoves(int xCoord, int yCoord, boolean attack) {
 	Piece p = board[xCoord][yCoord];
 	Movement m = p.getMovements();
         if (attack && p.getMovements() != p.getAttacks())  //movements and attacks don't point to same
@@ -151,31 +172,31 @@ public class Chess {
 	}
         //add all possible movements for horiz/vert/diags
         for (int[] diffxy : differences)
-            posMove(xCoord, yCoord, posMoves, diffxy[0], diffxy[1], attack);
+            posMoves(xCoord, yCoord, posMoves, diffxy[0], diffxy[1], attack);
 
         //add other movements
         for (int[] move : m.getOtherMov()) {
             int atX = xCoord + move[0];
             int atY = yCoord + move[1];
-            checkAddPosMove(xCoord, yCoord, posMoves, atX, atY, attack); //keep checking no matter return boolean
+            checkAddPosMoves(xCoord, yCoord, posMoves, atX, atY, attack); //keep checking no matter return boolean
         }
         
 	return posMoves;
     }
     //add possible movements given a dx and dy (for horiz/vert/diags)
-    public void posMove(int xCoord, int yCoord, List<int[]> posMoves, int dx, int dy, boolean attack) {
+    public void posMoves(int xCoord, int yCoord, List<int[]> posMoves, int dx, int dy, boolean attack) {
 	int atX = xCoord;
 	int atY = yCoord;
 	for (;;) {
 	    atX += dx;
 	    atY += dy;
-	    if (!checkAddPosMove(xCoord, yCoord, posMoves, atX, atY, attack)) //false, don't check anymore
+	    if (!checkAddPosMoves(xCoord, yCoord, posMoves, atX, atY, attack)) //false, don't check anymore
                 break;
 	}
     }
     //try to add possible move given coordinates.
     //return false if out of border or there was piece there
-    public boolean checkAddPosMove(int xCoord, int yCoord, List<int[]> posMoves, int x, int y, boolean attack) {
+    public boolean checkAddPosMoves(int xCoord, int yCoord, List<int[]> posMoves, int x, int y, boolean attack) {
         if (x < 0 || x > 7 || y < 0 || y > 7)
             return false;
         

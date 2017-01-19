@@ -100,21 +100,9 @@ public class Woo {
         System.out.println(Arrays.deepToString(c.posMove(3, 6, true).toArray()));
         System.out.println(c.inCheck(false));
         */
-<<<<<<< HEAD
 
-=======
-        
-	//Start
-	ChessBoard che = new ChessBoard();
-	Chess c = new Chess();
-	che.printBoard(c.getBoard(),5,7);//empty board
-	//che.addPieces(c.getBoard());
-	//che.printBoard(c.getBoard());
-	
-	/*todo
-	c.play();
-	*/
->>>>>>> 1728f60b8ce52d21634842098882e317b5f3173d
+
+
         
     }
 }

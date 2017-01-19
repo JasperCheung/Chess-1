@@ -53,7 +53,7 @@ public class Woo {
 	c.doMove(from, to);
 	c.printBoard();
 
-	System.out.println(Arrays.deepToString(c.posMove(to, false).toArray()));
+	System.out.println(Arrays.deepToString(c.posMove(to[0], to[1], false).toArray()));
 
         from[0] = 2;
         from[1] = 1;
@@ -62,7 +62,18 @@ public class Woo {
         c.doMove(from, to);
 	c.printBoard();
 
-	System.out.println(Arrays.deepToString(c.posMove(to, true).toArray()));
+	System.out.println(Arrays.deepToString(c.posMove(to[0], to[1], true).toArray()));
+        */
+        /* testing inCheck()
+        Chess c = new Chess();
+        c.printBoard();
+        int[] from = {3, 1};
+        int[] to = {3, 6};
+        c.doMove(from, to);
+        c.printBoard();
+
+        System.out.println(Arrays.deepToString(c.posMove(3, 6, true).toArray()));
+        System.out.println(c.inCheck(false));
         */
         
 	//Start

@@ -1,6 +1,6 @@
 import java.util.*;
 public class Chess {
-    //board encoded as columns by rows
+    //board encoded as columns by rows (x by y)
     //to faciliate easy transfer between Chess coordinates and board
     //(white left rook is (0, 0))
     private Piece[][] board;
@@ -16,40 +16,40 @@ public class Chess {
 
     //Loops through the board/ [][] and populates
     private void populateBoard() {
-	for (int r = 0; r < 8; r++) {
-	    for (int c = 0; c < 8; c++) {
-		setBoardPiece(c, r);
+	for (int x = 0; x < 8; x++) {
+	    for (int y = 0; y < 8; y++) {
+		setBoardPiece(x, y);
 	    }
 	}
     }
     // create 1 piece on board
-    private void setBoardPiece(int c, int r) {
-        if (r > 1 && r < 6)
+    private void setBoardPiece(int x, int y) {
+        if (y > 1 && y < 6)
             return;
         
 	Piece p;
         
-	if (r == 0 || r == 7) {
+	if (y == 0 || y == 7) {
 	    // white = true, black = false
-	    boolean color = r == 0;
+	    boolean color = y == 0;
             
-	    if (c == 0 || c == 7)
+	    if (x == 0 || x == 7)
 		p = new Rook(color);
-	    else if (c == 1 || c == 6)
+	    else if (x == 1 || x == 6)
 		p = new Knight(color);
-	    else if (c == 2 || c == 5)
+	    else if (x == 2 || x == 5)
 		p = new Bishop(color);
-	    else if (c == 3)
+	    else if (x == 3)
 		p = new Queen(color);
-	    else // c == 4
+	    else // x == 4
 		p = new King(color);
             
-	} else { //r == 1 or 6
-            boolean color = r == 1;
+	} else { //y == 1 or 6
+            boolean color = y == 1;
             p = new Pawn(color);
         }
         
-        board[c][r] = p;
+        board[x][y] = p;
     }
 
     //complete a turn for a player
@@ -68,21 +68,73 @@ public class Chess {
 	return true;
     }
     public boolean inCheck(boolean color) {
-	//go through all pieces of other player
-	//if they can attack own king -> in check
-	return true;
+        //get coordinate of king
+        int[] kingCoord = new int[2];
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                if (board[x][y] == null)
+                    continue;
+                Piece p = board[x][y];
+                if (p.isWhite() == color && p instanceof King) {
+                    kingCoord[0] = x;
+                    kingCoord[1] = y;
+                    break;
+                }
+                
+            }
+        }
+
+        //go through all pieces of enemy player
+	//if they can attack friendly king -> in check
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                if (board[x][y] == null)
+                    continue;
+                Piece p = board[x][y];
+                if (p.isWhite() != color && contains(posMove(x, y, true), (kingCoord)))
+                    return true;
+            }
+        }
+        
+	return false;
     }
+    //checks if list contains el (same values) (array doesn't override .equals)
+    //(maybe define Point...)
+    public static boolean contains(List<int[]> list, int[] el) {
+        for (int[] a : list) {
+            if (equals(a, el))
+                return true;
+        }
+        return false;
+    }
+    public static boolean equals(int[] a, int[] b) {
+        if (a.length != b.length)
+            return false;
+        if (a.length == 0)
+            return true;
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] != b[i])
+                return false;
+        }
+        return true;
+    }
+    
     public void doMove(int[] from, int[] to) {
 	board[to[0]][to[1]] = board[from[0]][from[1]];
 	board[from[0]][from[1]] = null;
     }
-    //get possible movement from coordinate (piece)
-    //stop when hit piece or end of border
-    public List<int[]> posMovement(int[] coord) {
-	Piece p = board[coord[0]][coord[1]];
+    
+    //get possible move from coordinate (piece) (either movement or attack)
+    //for movement: stop when hit piece or end of border
+    //for attack: only include when hit piece
+    //returns list of absolute coordinates
+    public List<int[]> posMove(int xCoord, int yCoord, boolean attack) {
+	Piece p = board[xCoord][yCoord];
 	Movement m = p.getMovements();
-
-        List<int[]> posMovs = new ArrayList<int[]>();
+        if (attack && p.getMovements() != p.getAttacks())  //movements and attacks don't point to same
+            m = p.getAttacks();
+        
+        List<int[]> posMoves = new ArrayList<int[]>();
 
         List<int[]> differences = new ArrayList<int[]>();
         //add horizVert differences
@@ -99,56 +151,66 @@ public class Chess {
 	}
         //add all possible movements for horiz/vert/diags
         for (int[] diffxy : differences)
-            posMovement(coord, posMovs, diffxy[0], diffxy[1]);
+            posMove(xCoord, yCoord, posMoves, diffxy[0], diffxy[1], attack);
 
         //add other movements
         for (int[] move : m.getOtherMov()) {
-            int atX = coord[0] + move[0];
-            int atY = coord[1] + move[1];
-            checkAddPosMovement(coord, posMovs, atX, atY); //if fails, continue
+            int atX = xCoord + move[0];
+            int atY = yCoord + move[1];
+            checkAddPosMove(xCoord, yCoord, posMoves, atX, atY, attack); //keep checking no matter return boolean
         }
         
-	return posMovs;
+	return posMoves;
     }
     //add possible movements given a dx and dy (for horiz/vert/diags)
-    public void posMovement(int[] coord, List<int[]> posMovs, int dx, int dy) {
-	int atX = coord[0];
-	int atY = coord[1];
+    public void posMove(int xCoord, int yCoord, List<int[]> posMoves, int dx, int dy, boolean attack) {
+	int atX = xCoord;
+	int atY = yCoord;
 	for (;;) {
 	    atX += dx;
 	    atY += dy;
-	    if (!checkAddPosMovement(coord, posMovs, atX, atY)) //failed; stop
+	    if (!checkAddPosMove(xCoord, yCoord, posMoves, atX, atY, attack)) //false, don't check anymore
                 break;
 	}
     }
-    //try to add possible move given coordinates. true if successful
-    public boolean checkAddPosMovement(int[] coord, List<int[]> posMovs, int x, int y) {
+    //try to add possible move given coordinates.
+    //return false if out of border or there was piece there
+    public boolean checkAddPosMove(int xCoord, int yCoord, List<int[]> posMoves, int x, int y, boolean attack) {
         if (x < 0 || x > 7 || y < 0 || y > 7)
             return false;
         
         Piece at = board[x][y];
-        if (at != null) // piece here
+        if (at != null) { // piece there
+            if (attack) {
+                Piece here = board[xCoord][yCoord];
+                if (at.isWhite() != here.isWhite()) { //different colors
+                    int[] atCoord = {x, y};
+                    posMoves.add(atCoord);
+                }
+            }
             return false;
-        
-        int[] atCoord = {x, y};
-        posMovs.add(atCoord);
+        }
+        if (!attack) {
+            int[] atCoord = {x, y};
+            posMoves.add(atCoord);
+        }
         return true;
         }
     
     public void printBoard() {
         //print the last (black) row first down to white
-	for (int r = 7; r > -1; r--) {
+	for (int y = 7; y > -1; y--) {
             
             //from each row print all the columns
 	    String s = "";
-	    for (int c = 0; c < 8; c++) {
-		Piece p = board[c][r];
+	    for (int x = 0; x < 8; x++) {
+		Piece p = board[x][y];
 		if (p != null) {
 		    s += p + " ";
 		} else {
 		    //put white boxes ■ for empty squares
 		    //Box should appear if the terminal supports Unicode characters
-		    if ((r + c) % 2 == 1) {
+		    if ((y + x) % 2 == 1) {
 		        s += "■ ";
 		    } else {
 			s += "  ";

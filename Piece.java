@@ -12,7 +12,10 @@ public abstract class Piece {
         // this applies to most Pieces (except Pawn)
         attacks = movements;
     }
-
+    
+    public boolean isWhite() {
+        return white;
+    }
     public Movement getMovements() {
         return movements;
     }

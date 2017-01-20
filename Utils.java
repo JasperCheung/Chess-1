@@ -49,6 +49,7 @@ public class Utils {
     }
     
     //prints board
+        
     public static void printBoard(Piece[][] board, int length, int width) {
 	String clr = " ";//white or black square
 	String label = "abcdefgh";
@@ -60,7 +61,11 @@ public class Utils {
 	    for(int r = 0; r < length; r++){
 		//labeling the rows of the board
 		//if on the middle row of square, print the label and border. Else print a space and the border
-		if(r == length/2) System.out.print(label.charAt(i) + "|");
+	        
+		if(r == length/2){
+		    System.out.print(i + 1 + "|");
+		    
+		}
 		else System.out.print(" |");
 
 		//loop through board columns
@@ -105,12 +110,14 @@ public class Utils {
 	System.out.print("\n  ");
 	for(int j = 0; j < 8; j++){
 	    for(int c = 0; c < width; c++){
-		if(c == width/2) System.out.print(j+1);
+		if(c == width/2) System.out.print(label.charAt(j));
 		else System.out.print(" ");
 	    }
 	}
         
         System.out.println();
     }
+        
+    
 
 }

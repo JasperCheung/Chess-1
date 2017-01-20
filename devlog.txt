@@ -93,6 +93,7 @@ Kenny :: implement getting possible moves, implement inCheck()
 Kenny :: implement isLegalMove(), add checkmating and legalMoves(), fix pawn movement
 (different colors have different movement relative to absolute coordinates), write play and turn
 Fabiha :: neater printBoard and put in Utils
+Jasper :: printBoard labels fixes, comments on new stuff
 
 2017-1-??
 --------------------------------------------------------------

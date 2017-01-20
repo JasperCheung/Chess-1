@@ -55,6 +55,7 @@ public class Chess {
     }
     
     public void play() {
+	// note: the for loop doesn't have a conditional
         //keep changing players until checkmated
         //also announce when player is checked (and checkmated)
         for (boolean color = true; ; color = !color) {
@@ -219,10 +220,12 @@ public class Chess {
         posMoves.addAll(posMoves(xCoord, yCoord, false));
         return posMoves;
     }
-    //get possible move from coordinate (piece) (either movement or attack)
-    //for movement: stop when hit piece or end of border
-    //for attack: only include when hit piece
-    //returns list of absolute coordinates
+    /*
+      get possible move from coordinate (piece) (either movement or attack)
+      for movement: stop when hit piece or end of border
+      for attack: only include when hit piece
+      returns list of absolute coordinates
+    */
     public List<int[]> posMoves(int xCoord, int yCoord, boolean attack) {
 	Piece p = board[xCoord][yCoord];
 	Movement m = p.getMovements();

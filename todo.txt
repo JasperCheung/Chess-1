@@ -21,10 +21,6 @@ Version 2: barebones chess
 1. Implement isLegalMove()
 2. Implement inCheck()
 3. Check if checkmate
-
--------------------------------
-Next
-
 4. play()
    a. Calls turn for each player
    b. loops until checkmate
@@ -33,6 +29,9 @@ Next
    b. Check if valid coordinate
    c. Gets user input again for move
    d. Does move if the user input is legal
+
+-------------------------------
+Next
 
 Version 3: working chess
 1. Implement special moves (castling, en passant, pawn promotion)

@@ -83,15 +83,16 @@ Kenny :: implemented making a move (Version 1.2)
 
 2017-1-18
 --------------------------------------------------------------
-Jasper,Kenny, Fabiha :: Legal movechecking discussion, further 
+Jasper, Kenny, Fabiha :: Legal movechecking discussion, further
 planning
 Jasper :: Barebones user input
 Kenny :: implement getting possible moves, implement inCheck()
 
 2017-1-19
 --------------------------------------------------------------
-Kenny :: implement checkAddLegalMove()
-Fabiha :: printBoard in Utils
+Kenny :: implement isLegalMove(), add checkmating and legalMoves(), fix pawn movement
+(different colors have different movement relative to absolute coordinates), write play and turn
+Fabiha :: neater printBoard and put in Utils
 
 2017-1-??
 --------------------------------------------------------------

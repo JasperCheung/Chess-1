@@ -53,6 +53,7 @@ public class Chess {
         
         board[x][y] = p;
     }
+    
     public void play() {
         //keep changing players until checkmated
         //also announce when player is checked (and checkmated)
@@ -65,6 +66,7 @@ public class Chess {
                     break;
                 }
             }
+            
             String s;
             if (color)
                 s = "White";
@@ -161,7 +163,6 @@ public class Chess {
                     kingCoord[1] = y;
                     break;
                 }
-                
             }
         }
 

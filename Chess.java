@@ -58,6 +58,13 @@ public class Chess {
         //also announce when player is checked (and checkmated)
         for (boolean color = true; ; color = !color) {
             printBoard();
+            if (inCheck(color)) {
+                System.out.println("In check!");
+                if (noLegalMoves(color)) {
+                    System.out.println("Is checkmated!");
+                    break;
+                }
+            }
             String s;
             if (color)
                 s = "White";
@@ -101,49 +108,55 @@ public class Chess {
             int[] to = Utils.coordToInts(move);
             
             //does move if legal, otherwise repeat
-            if (checkAddLegalMove(from, to))
+            if (isLegalMove(from, to)) {
+                doMove(from, to);
                 break;
-            else
+            } else {
                 System.out.println("Invalid move");
+            }
         }
     }
-    //does move and return true if legal
-    //undoes move and return false if illegal;
-    public boolean checkAddLegalMove(int[] from, int[] to) {
+    //returns true if legal
+    //simulates the move (undoes after doing)
+    public boolean isLegalMove(int[] from, int[] to) {
 	//is possible move
-	boolean movement = contains(posMoves(from[0], from[1], false), to);
-	boolean attack = contains(posMoves(from[0], from[1], true), to);
+	boolean movement = Utils.contains(posMoves(from[0], from[1], false), to);
+	boolean attack = Utils.contains(posMoves(from[0], from[1], true), to);
 	if (!movement && !attack)
 	    return false;
 	
 	//and then do move (if attack, then keep track of attacked movement)
-
 	Piece pieceFrom = board[from[0]][from[1]];
 	Piece killed = board[to[0]][to[1]];  //used only for attack
 	doMove(from, to);
 
 	//if own king not in check -> legal
-	if (!inCheck(pieceFrom.isWhite()))
-	    return true;
+        boolean legal = !inCheck(pieceFrom.isWhite());
 
-	//undo move (illegal)
+	//undo move
 	if (movement)
 	    doMove(to, from);
 	else {
 	    doMove(to, from);
 	    board[to[0]][to[1]] = killed;
 	}
-	return false;
+        
+	return legal;
     }
+    public void doMove(int[] from, int[] to) {
+	board[to[0]][to[1]] = board[from[0]][from[1]];
+	board[from[0]][from[1]] = null;
+    }
+    
     public boolean inCheck(boolean color) {
         //get coordinate of king
         int[] kingCoord = new int[2];
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                if (board[x][y] == null)
-                    continue;
                 Piece p = board[x][y];
-                if (p.isWhite() == color && p instanceof King) {
+                if (p == null || p.isWhite() != color)
+                    continue;
+                if (p instanceof King) {
                     kingCoord[0] = x;
                     kingCoord[1] = y;
                     break;
@@ -156,42 +169,55 @@ public class Chess {
 	//if they can attack friendly king -> in check
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                if (board[x][y] == null)
-                    continue;
                 Piece p = board[x][y];
-                if (p.isWhite() != color && contains(posMoves(x, y, true), (kingCoord)))
+                if (p == null || p.isWhite() == color)
+                    continue;
+                if (Utils.contains(posMoves(x, y, true), (kingCoord)))
                     return true;
             }
         }
         
 	return false;
     }
-    //checks if list contains el (same values) (array doesn't override .equals)
-    //(maybe define Point...)
-    public static boolean contains(List<int[]> list, int[] el) {
-        for (int[] a : list) {
-            if (equals(a, el))
-                return true;
+    
+    //if checked and noLegalMoves -> checkmated
+    //otherwise stalemate
+    public boolean noLegalMoves(boolean color) {
+        //go through all of own pieces
+        //if any has legal moves, return false
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                Piece p = board[x][y];
+                if (p == null || p.isWhite() != color)
+                    continue;
+                if (legalMoves(x, y).size() > 0)
+                    return false;
+            }
         }
-        return false;
-    }
-    public static boolean equals(int[] a, int[] b) {
-        if (a.length != b.length)
-            return false;
-        if (a.length == 0)
-            return true;
-        for (int i = 0; i < a.length; i++) {
-            if (a[i] != b[i])
-                return false;
-        }
+
         return true;
     }
     
-    public void doMove(int[] from, int[] to) {
-	board[to[0]][to[1]] = board[from[0]][from[1]];
-	board[from[0]][from[1]] = null;
+    //returns all legal moves at coordinate
+    public List<int[]> legalMoves(int xCoord, int yCoord) {
+        List<int[]> legalMoves = new ArrayList<int[]>();
+        int[] from = {xCoord, yCoord};
+        
+        //go through all possible moves and add if they are legal
+        for (int[] to : posMoves(xCoord, yCoord)) {
+            if (isLegalMove(from, to)) {
+                legalMoves.add(to);
+            }
+        }
+
+        return legalMoves;
     }
-    
+    //get all possible moves (attack and movement)
+    public List<int[]> posMoves(int xCoord, int yCoord) {
+        List<int[]> posMoves = posMoves(xCoord, yCoord, true);
+        posMoves.addAll(posMoves(xCoord, yCoord, false));
+        return posMoves;
+    }
     //get possible move from coordinate (piece) (either movement or attack)
     //for movement: stop when hit piece or end of border
     //for attack: only include when hit piece

@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class Utils {
     private static final String letters = "abcdefgh";
     private static final String numbers = "12345678";
@@ -23,6 +25,27 @@ public class Utils {
         if (letters.contains(s))
             return letters.indexOf(s);
         return numbers.indexOf(s);
+    }
+
+    //checks if list contains el (same values) (array doesn't override .equals)
+    //(maybe define Point...)
+    public static boolean contains(List<int[]> list, int[] el) {
+        for (int[] a : list) {
+            if (equals(a, el))
+                return true;
+        }
+        return false;
+    }
+    public static boolean equals(int[] a, int[] b) {
+        if (a.length != b.length)
+            return false;
+        if (a.length == 0)
+            return true;
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] != b[i])
+                return false;
+        }
+        return true;
     }
     
     //prints board

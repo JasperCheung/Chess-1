@@ -1,10 +1,12 @@
 //for testing printing arrays
-//import java.util.Arrays;
+import java.util.Arrays;
 public class Woo {
     public static void main(String[] args) {
 	//Start
+        
 	Chess c = new Chess();
         c.play();
+        
         
         /* testing toString
 	Queen q = new Queen(true);
@@ -70,8 +72,14 @@ public class Woo {
         c.doMove(from, to);
         c.printBoard();
 
-        System.out.println(Arrays.deepToString(c.posMove(3, 6, true).toArray()));
+        System.out.println(Arrays.deepToString(c.posMoves(3, 6, true).toArray()));
         System.out.println(c.inCheck(false));
+
+        //testing legalMoves()
+        System.out.println(Arrays.deepToString(c.legalMoves(3, 7).toArray()));
+
+        //testing noLegalMove()
+        System.out.println(c.noLegalMoves(false));
         */
 	/* testing islegalMove()
 	int[] from = {3, 1};
@@ -81,9 +89,24 @@ public class Woo {
 
 	from[0] = 3; from[1] = 5;
 	to[0] = 4; to[1] = 6;
-	System.out.println(c.checkAddLegalMove(from, to));
+	System.out.println(c.isLegalMove(from, to));
 	c.printBoard();
 	*/
+        /* testing noLegalMoves()
+        //simulate almost fool's mate
+        int[] from = {3, 7};
+        int[] to = {7, 3};
+        c.doMove(from, to);
+        from[0] = 5; from[1] = 1;
+        to[0] = 5; to[1] = 3;
+        c.doMove(from, to);
+        from[0] = 6; from[1] = 1;
+        to[0] = 6; to[1] = 3;
+        c.doMove(from, to);
+        
+        c.printBoard();
+        System.out.println(c.noLegalMoves(true));
+        */
 	/* test turn()
         c.turn(true);
         c.printBoard();

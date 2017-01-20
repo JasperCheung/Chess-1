@@ -128,7 +128,7 @@ public class Chess {
 	if (!movement && !attack)
 	    return false;
 	
-	//and then do move (if attack, then keep track of attacked movement)
+	//and then do move (if attack, then keep track of attacked piece)
 	Piece pieceFrom = board[from[0]][from[1]];
 	Piece killed = board[to[0]][to[1]];  //used only for attack
 	doMove(from, to);
@@ -220,9 +220,10 @@ public class Chess {
         posMoves.addAll(posMoves(xCoord, yCoord, false));
         return posMoves;
     }
+
     /*
       get possible move from coordinate (piece) (either movement or attack)
-      for movement: stop when hit piece or end of border
+      for movement: only include when moving to empty space
       for attack: only include when hit piece
       returns list of absolute coordinates
     */
@@ -234,6 +235,8 @@ public class Chess {
         
         List<int[]> posMoves = new ArrayList<int[]>();
 
+        //go through horiz/vert/diags by using differences
+        //keep going w/ differences until piece or border reached
         List<int[]> differences = new ArrayList<int[]>();
         //add horizVert differences
 	if (m.isHorizVert()) {
@@ -247,7 +250,7 @@ public class Chess {
                                     {1, -1}, {1, 1} };
             differences.addAll(Arrays.asList(differenceD));
 	}
-        //add all possible movements for horiz/vert/diags
+        //add all possible movements for differences
         for (int[] diffxy : differences)
             posMoves(xCoord, yCoord, posMoves, diffxy[0], diffxy[1], attack);
 

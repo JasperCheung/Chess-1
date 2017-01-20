@@ -91,7 +91,8 @@ Kenny :: implement getting possible moves, implement inCheck()
 2017-1-19
 --------------------------------------------------------------
 Kenny :: implement isLegalMove(), add checkmating and legalMoves(), fix pawn movement
-(different colors have different movement relative to absolute coordinates), write play and turn
+(different colors have different movement relative to absolute coordinates), write play and turn,
+added specialMoves and 2-square movement for pawns, added moved instance variable for Piece
 Fabiha :: neater printBoard and put in Utils
 Jasper :: printBoard labels fixes, comments on new stuff
 

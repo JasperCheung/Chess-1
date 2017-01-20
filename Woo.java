@@ -47,15 +47,13 @@ public class Woo {
         c.doMove(from, to);
         c.printBoard();
         */
-        /* testing posMove()
-	Chess c = new Chess();
-	c.printBoard();
+        /* testing posMoves()
 	int[] from = {3, 0};
 	int[] to = {3, 3};
 	c.doMove(from, to);
 	c.printBoard();
 
-	System.out.println(Arrays.deepToString(c.posMove(to[0], to[1], false).toArray()));
+	System.out.println(Arrays.deepToString(c.posMoves(to[0], to[1], false).toArray()));
 
         from[0] = 2;
         from[1] = 1;
@@ -64,7 +62,10 @@ public class Woo {
         c.doMove(from, to);
 	c.printBoard();
 
-	System.out.println(Arrays.deepToString(c.posMove(to[0], to[1], true).toArray()));
+	System.out.println(Arrays.deepToString(c.posMoves(to[0], to[1], true).toArray()));
+
+        System.out.println(Arrays.deepToString(c.posMoves(1, 1, false).toArray()));
+        System.out.println(Arrays.deepToString(c.posMoves(1, 1, true).toArray()));
         */
         /* testing inCheck()
         int[] from = {3, 1};

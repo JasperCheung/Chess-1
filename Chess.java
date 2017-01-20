@@ -112,6 +112,7 @@ public class Chess {
             
             //does move if legal, otherwise repeat
             if (isLegalMove(from, to)) {
+                p.moved();
                 doMove(from, to);
                 break;
             } else {
@@ -260,6 +261,9 @@ public class Chess {
             int atY = yCoord + move[1];
             checkAddPosMoves(xCoord, yCoord, posMoves, atX, atY, attack); //keep checking no matter return boolean
         }
+
+        //add special moves
+        specialMoves(xCoord, yCoord, posMoves, attack);
         
 	return posMoves;
     }
@@ -280,23 +284,35 @@ public class Chess {
         if (x < 0 || x > 7 || y < 0 || y > 7)
             return false;
         
-        Piece at = board[x][y];
-        if (at != null) { // piece there
+        Piece to = board[x][y];
+        if (to != null) { // piece there
             if (attack) {
-                Piece here = board[xCoord][yCoord];
-                if (at.isWhite() != here.isWhite()) { //different colors
-                    int[] atCoord = {x, y};
-                    posMoves.add(atCoord);
+                Piece from = board[xCoord][yCoord];
+                if (to.isWhite() != from.isWhite()) { //different colors
+                    int[] toCoord = {x, y};
+                    posMoves.add(toCoord);
                 }
             }
             return false;
         }
         if (!attack) {
-            int[] atCoord = {x, y};
-            posMoves.add(atCoord);
+            int[] toCoord = {x, y};
+            posMoves.add(toCoord);
         }
         return true;
         }
+
+    public void specialMoves(int xCoord, int yCoord, List<int[]> posMoves, boolean attack) {
+        Piece p = board[xCoord][yCoord];
+        
+        //pawn 2-square movement
+        if (!attack && p instanceof Pawn && !p.isMoved()) {
+            int dy = 2;
+            if (!p.isWhite())
+                dy = -2;
+            checkAddPosMoves(xCoord, yCoord, posMoves, xCoord, yCoord + dy, attack);
+        }
+    }
     
     public void printBoard() {
         Utils.printBoard(board, 3, 5);

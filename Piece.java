@@ -1,12 +1,16 @@
 public abstract class Piece {
     protected boolean white;
     protected String name;
-    
+
     protected Movement movements;
     protected Movement attacks;
 
+    //use in 2-square movement for pawns and castling
+    protected boolean moved;
+    
     public Piece(boolean init) {
 	white = init;
+        moved = false;
         createMovements();
         // point attacks to movements
         // this applies to most Pieces (except Pawn)
@@ -22,7 +26,13 @@ public abstract class Piece {
     public Movement getAttacks() {
         return attacks;
     }
-
+    public boolean isMoved() {
+        return moved;
+    }
+    public void moved() {
+        moved = true;
+    }
+    
     //every piece should at least have another method to create movements
     protected abstract void createMovements();
 

@@ -66,12 +66,17 @@ public class Chess {
         //also announce when player is checked (and checkmated)
         for (boolean color = true; ; color = !color) {
             printBoard();
-            if (inCheck(color)) {
+            
+            boolean noLegalMoves = noLegalMoves(color);
+            boolean check = inCheck(color);
+            if (check)
                 System.out.println("In check!");
-                if (noLegalMoves(color)) {
+            if (noLegalMoves) {
+                if (check)
                     System.out.println("Checkmated!");
-                    break;
-                }
+                else
+                    System.out.println("Stalemated!");
+                break;
             }
             
             String s;

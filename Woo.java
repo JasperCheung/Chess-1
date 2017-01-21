@@ -140,5 +140,27 @@ public class Woo {
         c.doSpecialMove(from2, to2);
         c.printBoard();
 	*/
+        /* testing pawn promotion
+        int[] from = {0, 1};
+        int[] to = {0, 5};
+        c.doMove(from, to);
+        c.printBoard();
+        
+	System.out.println(Arrays.deepToString(c.posMoves(0, 6).toArray()));
+        System.out.println(Arrays.deepToString(c.legalMoves(0, 6).toArray()));
+        c.printBoard();
+
+        //have p moved
+        c.turn(true);
+        c.printBoard();
+
+        int[] from2 = {1, 6};
+        int[] to2 = {0, 7};
+        System.out.println(c.isSpecialMove(from2, to2));
+        //System.out.println(c.isPosMove(from2, to2));
+
+        c.turn(true);
+        c.printBoard();
+        */
     }
 }

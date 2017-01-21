@@ -169,19 +169,31 @@ public class Chess {
     
     public boolean isSpecialMove(int[] from, int[] to) {
         List<int[]> specialMoves = new ArrayList<int[]>();
+
+        Piece p = board[from[0]][from[1]];
+        //pawn promotion
+        if (p instanceof Pawn && p.isMoved() && isPosMove(from, to)) {
+            if (to[1] == 7 || to[1] == 0)
+                return true;
+        }
         int xCoord = from[0];
         int yCoord = from[1];
         addSpecialMoves(xCoord, yCoord, specialMoves, false);
         addSpecialMoves(xCoord, yCoord, specialMoves, true);
         return Utils.contains(specialMoves, to);
     }
-    //assume is special move
+    //assume is valid special move
     public boolean isLegalSpecialMove(int[] from, int[] to) {
         Piece p = board[from[0]][from[1]];
         
-        //pawn 2-square movement
         if (p instanceof Pawn) {
-            return isLegalMove(from, to);
+            if (!p.isMoved()) {
+                //pawn 2-square movement
+                return isLegalMove(from, to);
+            } else if (to[1] == 7 || to[1] == 0){
+                //pawn promotion
+                return  isLegalMove(from, to);
+            }
         }
 
         //castling
@@ -212,14 +224,21 @@ public class Chess {
 
         return true;
     }
-    //assume is special move
-    public void doSpecialMove(int[] from, int[] to) {
+    //assume is valid special move
+    //true if successful
+    public boolean doSpecialMove(int[] from, int[] to) {
         Piece p = board[from[0]][from[1]];
 
-        //pawn 2-square movement
         if (p instanceof Pawn) {
-            doMove(from, to);
-            return;
+            if (!p.isMoved()) {
+                //pawn 2-square movement
+                doMove(from, to);
+                return true;
+            } else {
+                //pawn promotion
+                doMove(from, to);
+                return promotePawn(to);
+            }
         }
         
         //castling (to is coordinate of rook)
@@ -243,6 +262,33 @@ public class Chess {
             rook.moved();
             doMove(to, toRook);
         }
+
+        return true;
+    }
+    //assume valid pawn coordinate
+    //true if successful
+    private boolean promotePawn(int[] coord) {
+        String s = "Promote pawn!\n";
+        s += "Enter piece name you want to promote to ('q', 'r', 'b', or 'n'):";
+        System.out.println(s);
+
+        String name = Keyboard.readString().toLowerCase();
+
+        Piece pawn = board[coord[0]][coord[1]];
+        boolean color = pawn.isWhite();
+        Piece promoted;
+        
+        switch(name) {
+        case "q": promoted = new Queen(color); break;
+        case "r": promoted = new Rook(color); break;
+        case "b": promoted = new Bishop(color); break;
+        case "n": promoted = new Knight(color); break;
+        default: System.out.println("Unrecognized name"); return false;
+        }
+
+        board[coord[0]][coord[1]] = promoted;
+        
+        return true;
     }
     
     public boolean inCheck(boolean color) {
@@ -409,10 +455,15 @@ public class Chess {
         
         //pawn 2-square movement
         if (!attack && p instanceof Pawn && !p.isMoved()) {
-            int dy = 2;
+            int dy = 1;
             if (!p.isWhite())
-                dy = -2;
-            checkAddPosMoves(xCoord, yCoord, posMoves, xCoord, yCoord + dy, attack);
+                dy = -1;
+            //no piece 1 square ahead
+            Piece at = board[xCoord][yCoord + dy];
+            if (at == null) {
+                dy *= 2;
+                checkAddPosMoves(xCoord, yCoord, posMoves, xCoord, yCoord + dy, attack);
+            }
         }
 
         //castling

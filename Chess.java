@@ -181,17 +181,25 @@ public class Chess {
             doMove(from, to);
             
             //find rook: go in direction of to
-            int[] fromRook = {0, from[1]};
-            int[] toRook = {0, from[1]};
+            int xRook = -1;
+            int dx = 1;
             if (to[0] < from[0]) {  //king goes left: rook goes right
-                fromRook[0] = 0;
-                toRook[0] = to[0] + 1;
-            } else {
-                fromRook[0] = 7;
-                toRook[0] = to[0] - 1;
+                dx = -1;
+            }
+            for (int atX = from[0]; atX > -1 && atX < 8; atX += dx) {
+                Piece rook = board[atX][from[1]];
+                if (rook == null || !(rook instanceof Rook))
+                    continue;
+                xRook = atX;
+                break;
             }
             
+            int[] fromRook = {xRook, from[1]};
+            int[] toRook = {to[0] - dx, from[1]};
+            
             //move rook
+            Piece rook = board[fromRook[0]][fromRook[1]];
+            rook.moved();
             doMove(fromRook, toRook);
         }
     }
@@ -367,33 +375,56 @@ public class Chess {
     private void addCastling(int xCoord, int yCoord, List<int[]> posMoves, boolean attack) {
 	Piece p = board[xCoord][yCoord];
 	
-	//castling (only for king coord)
-	//only do queen side castling for now
+	//castling (only with king coord)
 	if (attack || !(p instanceof King) || p.isMoved())
 	    return;
 
-	int kingEnd = 2;
-	//all spots from king to end spot are empty
-	for (int atX = xCoord - 1; atX >= kingEnd; atX--) {
-	    Piece at = board[atX][yCoord];
-	    if (at != null)
-		return;
-	}
-	
-	//get rook (both sides)
-	Piece rook1 = board[0][yCoord]; //left rook
-	if (rook1 == null || !(rook1 instanceof Rook) || rook1.isMoved())
-	    return;
+        addCastling(xCoord, yCoord, posMoves, p, 2);
+        addCastling(xCoord, yCoord, posMoves, p, 6);
+    }
+    //with the end spot for the king, add the castling if possible
+    private void addCastling(int xCoord, int yCoord, List<int[]> posMoves, Piece p, int kingEnd) {
+        boolean kingGoesLeft = kingEnd < xCoord;
+        
+	//all spots from king to end spot are empty (exclude king)
+        if (!isEmptyBetween(kingEnd, yCoord, xCoord))
+            return;
 
-	//all spots from rook to end spot are empty
-	for (int atX = 1; atX < kingEnd; atX++) {
-	    Piece at = board[atX][yCoord];
-	    if (at != null)
-		return;
-	}
-	
+	//get rook
+        int xRook = -1;
+        int dx = 1;
+        if (kingGoesLeft) {
+            dx = -1;
+        }
+        //go from king to left or right to find rook
+        for (int atX = xCoord; atX > -1 && atX < 8; atX += dx) {
+            Piece rook = board[atX][yCoord];
+            if (rook == null || !(rook instanceof Rook))
+                continue;
+            xRook = atX;
+            break;
+        }
+        if (xRook == -1) //not found
+            return;
+        
+	Piece rook = board[xRook][yCoord];
+	if (rook.isMoved())
+	    return;
+        
+	//all spots from rook to end spot are empty (exclude rook)
+        if (!isEmptyBetween(kingEnd, yCoord, xRook))
+            return;
+
 	//king can't be in check for any square while moving to end spot (including beginning)
-	for (int atX = xCoord; atX >= kingEnd; atX--) {
+        //have start be less than end
+        int start = xCoord;
+        int end = kingEnd;
+        if (kingGoesLeft) {
+            int temp = start;
+            start = end;
+            end = temp;
+        }
+	for (int atX = start; atX <= end; atX += 1) {
 	    //do move, check, and undo
 	    int[] from = {xCoord, yCoord};
 	    int[] to = {atX, yCoord};
@@ -406,6 +437,23 @@ public class Chess {
 	
 	checkAddPosMoves(xCoord, yCoord, posMoves, kingEnd, yCoord, false);
     }
+    private boolean isEmptyBetween(int xStart, int yCoord, int xEnd) {
+        //include xStart, exclude xEnd
+        //have xStart be less than xEnd
+        if (xEnd < xStart) {
+            int temp = xStart;
+            xStart = xEnd + 1;
+            xEnd = temp + 1;
+        }
+        for (int atX = xStart; atX < xEnd; atX++) {
+	    Piece at = board[atX][yCoord];
+	    if (at != null)
+		return false;
+	}
+
+        return true;
+    }
+    
     public void printBoard() {
         Utils.printBoard(board, 3, 5);
     }

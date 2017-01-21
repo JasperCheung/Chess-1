@@ -117,7 +117,9 @@ public class Woo {
         
 	int[] from = new int[2];
 	int[] to = new int[2];
-	for (int i = 1; i < 4; i++) {
+	for (int i = 1; i < 7; i++) {
+            if (i == 4)
+                continue;
 	    from[0] = i; from[1] = 0;
 	    to[0] = i; to[1] = 1;
 	    c.doMove(from, to);
@@ -125,13 +127,13 @@ public class Woo {
 	c.printBoard();
 
 	System.out.println(Arrays.deepToString(c.posMoves(4, 0).toArray()));
-	c.printBoard();
-	
+        
 	System.out.println(Arrays.deepToString(c.legalMoves(4, 0).toArray()));
 
         //testing isSpecialMove
         int[] from2 = {4, 0};
-        int[] to2 = {2, 0};
+        //int[] to2 = {2, 0};
+        int[] to2 = {6, 0};
         System.out.println(c.isSpecialMove(from2, to2));
 
         //testing doSpecialMove

@@ -127,13 +127,13 @@ public class Woo {
 	c.printBoard();
 
 	System.out.println(Arrays.deepToString(c.posMoves(4, 0).toArray()));
-        
-	System.out.println(Arrays.deepToString(c.legalMoves(4, 0).toArray()));
 
+	System.out.println(Arrays.deepToString(c.legalMoves(4, 0).toArray()));
+        
         //testing isSpecialMove
         int[] from2 = {4, 0};
-        //int[] to2 = {2, 0};
-        int[] to2 = {6, 0};
+        int[] to2 = {0, 0};
+        //int[] to2 = {7, 0};
         System.out.println(c.isSpecialMove(from2, to2));
 
         //testing doSpecialMove

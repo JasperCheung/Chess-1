@@ -115,17 +115,18 @@ public class Chess {
             int[] to = Utils.coordToInts(move);
             
             //does move if legal, otherwise repeat
-            if (isPosMove(from, to) && isLegalMove(from, to)) {
-		updateHistory(from,to);
-		if (isSpecialMove(from, to))
-                    doSpecialMove(from, to);
-                else
-                    doMove(from, to);
-                p.moved();
-                break;
-            } else {
-                System.out.println("Invalid move");
+            if (isPosMove(from, to)) {
+                if ((isSpecialMove(from, to) && isLegalSpecialMove(from, to)) || isLegalMove(from, to)) {
+                    updateHistory(from,to);
+                    if (isSpecialMove(from, to))
+                        doSpecialMove(from, to);
+                    else
+                        doMove(from, to);
+                    p.moved();
+                    break;
+                }
             }
+            System.out.println("Invalid move");
         }
     }
     /*
@@ -175,6 +176,43 @@ public class Chess {
         return Utils.contains(specialMoves, to);
     }
     //assume is special move
+    public boolean isLegalSpecialMove(int[] from, int[] to) {
+        Piece p = board[from[0]][from[1]];
+        
+        //pawn 2-square movement
+        if (p instanceof Pawn) {
+            return isLegalMove(from, to);
+        }
+
+        //castling
+        if (p instanceof King) {
+            int kingEnd = 6;
+            if (to[0] < from[0])
+                kingEnd = 2;
+            
+            //king can't be in check for any square while moving to end spot (including beginning)
+            //have start be less than end
+            int start = from[0];
+            int end = kingEnd;
+            if (end < start) {
+                int temp = start;
+                start = end;
+                end = temp;
+            }
+            for (int atX = start; atX <= end; atX += 1) {
+                //do move, check, and undo
+                int[] toSpot = {atX, from[1]};
+                doMove(from, toSpot);
+                boolean check = inCheck(p.isWhite());
+                doMove(toSpot, from);
+                if (check)
+                    return false;
+            }
+        }
+
+        return true;
+    }
+    //assume is special move
     public void doSpecialMove(int[] from, int[] to) {
         Piece p = board[from[0]][from[1]];
 
@@ -184,32 +222,26 @@ public class Chess {
             return;
         }
         
-        //castling
+        //castling (to is coordinate of rook)
         if (p instanceof King) {
+            int kingEnd = 6;
+            if (to[0] < from[0]) //move left
+                kingEnd = 2;
+            int[] end = {kingEnd, from[1]};
+            
             //move king
-            doMove(from, to);
-            
-            //find rook: go in direction of to
-            int xRook = -1;
-            int dx = 1;
-            if (to[0] < from[0]) {  //king goes left: rook goes right
-                dx = -1;
-            }
-            for (int atX = from[0]; atX > -1 && atX < 8; atX += dx) {
-                Piece rook = board[atX][from[1]];
-                if (rook == null || !(rook instanceof Rook))
-                    continue;
-                xRook = atX;
-                break;
-            }
-            
-            int[] fromRook = {xRook, from[1]};
-            int[] toRook = {to[0] - dx, from[1]};
+            doMove(from, end);
+
+            //get rook end position
+            int dx = -1;
+            if (to[0] < from[0])
+                dx = 1;
+            int[] toRook = {kingEnd + dx, from[1]};
             
             //move rook
-            Piece rook = board[fromRook[0]][fromRook[1]];
+            Piece rook = board[to[0]][to[1]];
             rook.moved();
-            doMove(fromRook, toRook);
+            doMove(to, toRook);
         }
     }
     
@@ -267,13 +299,14 @@ public class Chess {
         List<int[]> posMoves = posMoves(xCoord, yCoord);
         return selectLegalMoves(xCoord, yCoord, posMoves);
     }
+    //assume posMoves is valid
     public List<int[]> selectLegalMoves(int xCoord, int yCoord, List<int[]> posMoves) {
 	List<int[]> legalMoves = new ArrayList<int[]>();
         int[] from = {xCoord, yCoord};
         
         //go through all possible moves and add if they are legal
         for (int[] to : posMoves) {
-            if (isLegalMove(from, to)) {
+            if ((isSpecialMove(from, to) && isLegalSpecialMove(from, to)) || isLegalMove(from, to)) {
                 legalMoves.add(to);
             }
         }
@@ -385,10 +418,11 @@ public class Chess {
         //castling
 	addCastling(xCoord, yCoord, posMoves, attack);
     }
+    //from: coordinate of King
+    //to: coordinate of Rook
     private void addCastling(int xCoord, int yCoord, List<int[]> posMoves, boolean attack) {
 	Piece p = board[xCoord][yCoord];
 	
-	//castling (only with king coord)
 	if (attack || !(p instanceof King) || p.isMoved())
 	    return;
 
@@ -397,8 +431,6 @@ public class Chess {
     }
     //with the end spot for the king, add the castling if possible
     private void addCastling(int xCoord, int yCoord, List<int[]> posMoves, Piece p, int kingEnd) {
-        boolean kingGoesLeft = kingEnd < xCoord;
-        
 	//all spots from king to end spot are empty (exclude king)
         if (!isEmptyBetween(kingEnd, yCoord, xCoord))
             return;
@@ -406,7 +438,7 @@ public class Chess {
 	//get rook
         int xRook = -1;
         int dx = 1;
-        if (kingGoesLeft) {
+        if (kingEnd < xCoord) {
             dx = -1;
         }
         //go from king to left or right to find rook
@@ -428,27 +460,8 @@ public class Chess {
         if (!isEmptyBetween(kingEnd, yCoord, xRook))
             return;
 
-	//king can't be in check for any square while moving to end spot (including beginning)
-        //have start be less than end
-        int start = xCoord;
-        int end = kingEnd;
-        if (kingGoesLeft) {
-            int temp = start;
-            start = end;
-            end = temp;
-        }
-	for (int atX = start; atX <= end; atX += 1) {
-	    //do move, check, and undo
-	    int[] from = {xCoord, yCoord};
-	    int[] to = {atX, yCoord};
-	    doMove(from, to);
-	    boolean check = inCheck(p.isWhite());
-	    doMove(to, from);
-	    if (check)
-		return;
-	}
-	
-	checkAddPosMoves(xCoord, yCoord, posMoves, kingEnd, yCoord, false);
+        int[] to = {xRook, yCoord};
+        posMoves.add(to);
     }
     private boolean isEmptyBetween(int xStart, int yCoord, int xEnd) {
         //include xStart, exclude xEnd

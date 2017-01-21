@@ -19,10 +19,11 @@ maybe some of these will move into the Obs.Ovrcm section...
 
 COOL STUFF LEARNED
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-wow! oo!...
+The continue key word in  a loop starts again at the conditional of the loop without running the rest of the code following continue.
 
 MID-DEVELOPMENT DESIGN CHANGES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+We added new classes (Movement, Utils) we did not originally plan for.
 we changed ___ to ___ bc...
 
 LESSONS LEARNED
@@ -63,8 +64,8 @@ Jasper :: setting up devlog, work on flowchart
 2017-1-12
 --------------------------------------------------------------
 Kenny :: Completed Version 0. completed populating board and printing board.
-Fabiha, Jasper :: worked on flowchart
-Jasper :: added more comments, format
+Jasper :: worked on flowchart, added more comments, format
+Fabiha :: worked on UML diagram
 
 2017-1-13
 --------------------------------------------------------------
@@ -80,6 +81,7 @@ Kenny :: Reduced code duplication: Added String name for Piece, augmented Piece 
 Jasper :: moved previous README.md to BrainStorm.md.
 Added project description and launch instructions to README.md.
 Kenny :: implemented making a move (Version 1.2)
+Fabiha :: implemented printBoard() in new class ChessBoard
 
 2017-1-18
 --------------------------------------------------------------

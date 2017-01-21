@@ -18,7 +18,10 @@ public class Chess {
     public Piece[][] getBoard(){
 	return board;
     }
-
+    public ArrayList<int[][]> getHistory() {
+        return history;
+    }
+    
     //Loops through the board/ [][] and populates
     private void populateBoard() {
 	for (int x = 0; x < 8; x++) {
@@ -178,6 +181,7 @@ public class Chess {
             if (to[1] == 7 || to[1] == 0)
                 return true;
         }
+        
         int xCoord = from[0];
         int yCoord = from[1];
         addSpecialMoves(xCoord, yCoord, specialMoves, false);
@@ -185,6 +189,7 @@ public class Chess {
         return Utils.contains(specialMoves, to);
     }
     //assume is valid special move
+    //true if legal
     public boolean isLegalSpecialMove(int[] from, int[] to) {
         Piece p = board[from[0]][from[1]];
         
@@ -194,7 +199,26 @@ public class Chess {
                 return isLegalMove(from, to);
             } else if (to[1] == 7 || to[1] == 0){
                 //pawn promotion
-                return  isLegalMove(from, to);
+                return isLegalMove(from, to);
+            } else {
+                //en passant
+                //check also with killing the pawn (isLegalMove doesn't do this)
+                int dy = 1;
+                if (p.isWhite())
+                    dy = -1;
+                
+                Piece killed = board[to[0]][to[1] + dy];
+                board[to[0]][to[1] + dy] = null;
+                doMove(from, to);
+                
+                //if own king not in check -> legal
+                boolean legal = !inCheck(p.isWhite());
+
+                //undo move
+                doMove(to, from);
+                board[to[0]][to[1] + dy] = killed;
+
+                return legal;
             }
         }
 
@@ -226,7 +250,7 @@ public class Chess {
 
         return true;
     }
-    //assume is valid special move
+    //assume legal special move
     //true if successful
     public boolean doSpecialMove(int[] from, int[] to) {
         Piece p = board[from[0]][from[1]];
@@ -235,11 +259,18 @@ public class Chess {
             if (!p.isMoved()) {
                 //pawn 2-square movement
                 doMove(from, to);
-                return true;
-            } else {
+            } else if (to[1] == 7 || to[1] == 0){
                 //pawn promotion
                 if (!promotePawn(from))
                     return false;
+                doMove(from, to);
+            } else {
+                //en passant
+                //also kill piece
+                int dy = 1;
+                if (p.isWhite())
+                    dy = -1;
+                board[to[0]][to[1] + dy] = null;
                 doMove(from, to);
             }
         }
@@ -456,19 +487,47 @@ public class Chess {
     public void addSpecialMoves(int xCoord, int yCoord, List<int[]> posMoves, boolean attack) {
         Piece p = board[xCoord][yCoord];
         
-        //pawn 2-square movement
-        if (!attack && p instanceof Pawn && !p.isMoved()) {
-            int dy = 1;
-            if (!p.isWhite())
-                dy = -1;
-            //no piece 1 square ahead
-            Piece at = board[xCoord][yCoord + dy];
-            if (at == null) {
+        if (p instanceof Pawn) {
+            //pawn 2-square movement
+            if (!attack && !p.isMoved()) {
+                int dy = 1;
+                if (!p.isWhite())
+                    dy = -1;
+                
+                //no piece 1 square ahead
+                Piece at = board[xCoord][yCoord + dy];
+                if (at != null)
+                    return;
+                
                 dy *= 2;
-                checkAddPosMoves(xCoord, yCoord, posMoves, xCoord, yCoord + dy, attack);
+                int[] to = {xCoord, yCoord + dy};
+                posMoves.add(to);
+            }
+
+            //en passant
+            if (attack && p.isMoved()) {
+                //check history (pawn to left or right && did double-move)
+                int[][] lastMove = history.get(history.size() - 1);
+                int[] lastFrom = lastMove[0];
+                int[] lastTo = lastMove[1];
+                Piece atLastTo = board[lastTo[0]][lastTo[1]];
+                if (!(atLastTo instanceof Pawn) || lastTo[1] != yCoord || Math.abs(lastFrom[1] - lastTo[1]) != 2 || Math.abs(lastTo[0] - xCoord) != 1)
+                    return;
+
+                //left or right
+                int dx = 1;
+                if (lastTo[0] < xCoord)
+                    dx = -1;
+
+                int dy = -1;
+                if (p.isWhite())
+                    dy = 1;
+                
+                int[] to = {xCoord + dx, yCoord + dy};
+                posMoves.add(to);
             }
         }
-
+        
         //castling
 	addCastling(xCoord, yCoord, posMoves, attack);
     }

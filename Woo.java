@@ -160,5 +160,19 @@ public class Woo {
         c.turn(true);
         c.printBoard();
         */
+        /* test history and en passant
+        int count = 0;
+        for (boolean color = true; count < 4; color = !color) {
+            c.printBoard();
+            c.turn(color);
+            count++;
+        }
+        c.printBoard();
+        System.out.println(Arrays.deepToString(c.getHistory().toArray()));
+        System.out.println(Arrays.deepToString(c.legalMoves(3, 4).toArray()));
+        
+        c.turn(true);
+        c.printBoard();
+        */
     }
 }

@@ -6,6 +6,7 @@ public class Chess {
     //to faciliate easy transfer between Chess coordinates and board
     //(white left rook is (0, 0))
     private Piece[][] board;
+    private ArrayList<int[][]> history;
 
     public Chess() {
 	board = new Piece[8][8];
@@ -113,6 +114,7 @@ public class Chess {
             
             //does move if legal, otherwise repeat
             if (isPosMove(from, to) && isLegalMove(from, to)) {
+		updateHistory(from,to);
 		if (isSpecialMove(from, to))
                     doSpecialMove(from, to);
                 else
@@ -452,6 +454,12 @@ public class Chess {
 	}
 
         return true;
+    }
+
+    //keeps track of movements
+    public void updateHistory(int[] from, int[] to){
+	int[][] movement = {from, to};
+	history.add(movement);
     }
     
     public void printBoard() {

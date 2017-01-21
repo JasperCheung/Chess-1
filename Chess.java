@@ -317,10 +317,6 @@ public class Chess {
         for (int[] move : m.getOtherMov()) {
             int atX = xCoord + move[0];
             int atY = yCoord + move[1];
-            if (!p.isWhite()) {  //for black, consider movements flipped
-                atX = xCoord - move[0];
-                atY = yCoord - move[1];
-            }
             checkAddPosMoves(xCoord, yCoord, posMoves, atX, atY, attack); //keep checking no matter return boolean
         }
 

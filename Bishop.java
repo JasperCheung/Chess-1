@@ -4,8 +4,7 @@ public class Bishop extends Piece {
         name = "b";
     }
 
-    public Movement createMovements() {
-        Movement movement = new Movement(null, false, true);
-        return movement;
+    protected void createMovements() {
+        movements = new Movement(null, false, true);
     }
 }

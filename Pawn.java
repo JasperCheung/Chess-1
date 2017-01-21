@@ -5,14 +5,28 @@ public class Pawn extends Piece {
         createAttacks();
     }
 
-    public Movement createMovements() {
-        int[][] OM = { {0, 1} };
-        Movement movement = new Movement(OM);
-        return movement;
+    protected void createMovements() {
+        //different behavior depending on color
+        if (white) {
+            int[][] OM = { {0, 1} };
+            movements = new Movement(OM);
+        } else {
+            int[][] OM = { {0, -1} };
+            movements = new Movement(OM);
+        }
+            
+        
     }
     private void createAttacks() {
-        int[][] OM = { {-1, 1},
-                       {1, 1} };
-        attacks = new Movement(OM);
+        //different behavior depending on color
+        if (white) {
+            int[][] OM = { {-1, 1},
+                           {1, 1} };
+            attacks = new Movement(OM);
+        } else {
+            int[][] OM = { {-1, -1},
+                           {1, -1} };
+            attacks = new Movement(OM);
+        }
     }
 }

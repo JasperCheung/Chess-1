@@ -11,7 +11,7 @@ public abstract class Piece {
     public Piece(boolean init) {
 	white = init;
         moved = false;
-        movements = createMovements();
+        createMovements();
         // point attacks to movements
         // this applies to most Pieces (except Pawn)
         attacks = movements;
@@ -34,9 +34,7 @@ public abstract class Piece {
     }
     
     //every piece should at least have another method to create movements
-    //have it public and return instead of setting to fake static method
-    //(slight workaround bc abstract and need for pawn promotion)
-    public abstract Movement createMovements();
+    protected abstract void createMovements();
 
     public String toString() {
         if (white)

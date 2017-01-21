@@ -4,8 +4,7 @@ public class Rook extends Piece {
         name = "r";
     }
 
-    public Movement createMovements() {
-        Movement movement = new Movement(null, true, false);
-        return movement;
+    protected void createMovements() {
+        movements = new Movement(null, true, false);
     }
 }

@@ -44,6 +44,7 @@ public class Utils {
     public static void printPieces(List<Piece> whitePieces, List<Piece> blackPieces) {
 
     }
+    
     //return true if resign or draw
     public static boolean confirmResign() {
         System.out.println("Resign? (y/n)");

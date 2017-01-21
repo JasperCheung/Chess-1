@@ -110,12 +110,13 @@ public class Chess {
             if (!validCoord) {
                 if (!validCommand) {
                     System.out.println("Unrecognized command or coordinate of piece");
-                    continue;
                 } else {
-                    if (!doCommand(input))
+                    if (!doCommand(input)) {
+                        continuePlaying = false;
                         break;
-                    continue;
+                    }
                 }
+                continue;
             }
             int[] from = Utils.coordToInts(input);
 
@@ -621,23 +622,18 @@ public class Chess {
     }
 
     //assume valid command
-    //return if continue with turn
+    //return if continue playing
     public boolean doCommand(String command) {
         command = command.toLowerCase();
         switch(command) {
         case "history": Utils.printHistory(history); break;
         case "pieces": Utils.printPieces(whitePieces, blackPieces); break;
-        case "resign":
-            boolean resign = !Utils.confirmResign(); //confirm resignation
-            continuePlaying = resign;
-            return resign;
-        case "draw":
-            boolean draw = !Utils.confirmDraw(); //confirm with other player
-            continuePlaying = draw;
-            return draw;
+            
+        case "resign": return !Utils.confirmResign();
+        case "draw": return !Utils.confirmDraw();
+            
         case "help" : case "h": case "?": Utils.printHelp(); break;
         case "quit": case "q": case "exit": case "e":
-            continuePlaying = false;
             System.out.println("Exiting...");
             return false;
         }

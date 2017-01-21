@@ -4,7 +4,8 @@ public class Queen extends Piece {
         name = "q";
     }
 
-    protected void createMovements() {
-        movements = new Movement(null, true, true);
+    public Movement createMovements() {
+        Movement movement = new Movement(null, true, true);
+        return movement;
     }
 }

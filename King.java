@@ -4,7 +4,7 @@ public class King extends Piece {
         name = "k";
     }
     
-    protected void createMovements() {
+    public Movement createMovements() {
         int[][] OM = new int[8][2];
 
         int index = 0;
@@ -19,6 +19,7 @@ public class King extends Piece {
             }
         }
 
-        movements = new Movement(OM);
+        Movement movement = new Movement(OM);
+        return movement;
     }
 }

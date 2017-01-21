@@ -11,6 +11,8 @@ public class Chess {
     public Chess() {
 	board = new Piece[8][8];
 	populateBoard();
+
+        history = new ArrayList<int[][]>();
     }
     
     public Piece[][] getBoard(){
@@ -126,6 +128,11 @@ public class Chess {
             }
         }
     }
+    /*
+      Possible moves vs Legal moves:
+      Possible moves only get the movements and check the boundaries
+      Legal moves are possible moves but have also checked that they don't leave the king in check
+    */
     public boolean isPosMove(int[] from, int[] to) {
         return Utils.contains(posMoves(from[0], from[1]), to);
     }
@@ -317,6 +324,10 @@ public class Chess {
         for (int[] move : m.getOtherMov()) {
             int atX = xCoord + move[0];
             int atY = yCoord + move[1];
+            if (!p.isWhite()) {  //for black, consider movements flipped
+                atX = xCoord - move[0];
+                atY = yCoord - move[1];
+            }
             checkAddPosMoves(xCoord, yCoord, posMoves, atX, atY, attack); //keep checking no matter return boolean
         }
 
@@ -456,10 +467,10 @@ public class Chess {
         return true;
     }
 
-    //keeps track of movements
+    //keeps track of moves
     public void updateHistory(int[] from, int[] to){
-	int[][] movement = {from, to};
-	history.add(movement);
+	int[][] move = {from, to};
+	history.add(move);
     }
     
     public void printBoard() {

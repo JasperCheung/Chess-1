@@ -112,6 +112,31 @@ public class Woo {
         c.turn(true);
         c.printBoard();
         */
+        /* testing addCastling
+        System.out.println(Arrays.deepToString(c.posMoves(4, 0).toArray()));
         
+	int[] from = new int[2];
+	int[] to = new int[2];
+	for (int i = 1; i < 4; i++) {
+	    from[0] = i; from[1] = 0;
+	    to[0] = i; to[1] = 1;
+	    c.doMove(from, to);
+	}
+	c.printBoard();
+
+	System.out.println(Arrays.deepToString(c.posMoves(4, 0).toArray()));
+	c.printBoard();
+	
+	System.out.println(Arrays.deepToString(c.legalMoves(4, 0).toArray()));
+
+        //testing isSpecialMove
+        int[] from2 = {4, 0};
+        int[] to2 = {2, 0};
+        System.out.println(c.isSpecialMove(from2, to2));
+
+        //testing doSpecialMove
+        c.doSpecialMove(from2, to2);
+        c.printBoard();
+	*/
     }
 }

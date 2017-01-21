@@ -6,6 +6,9 @@ public class Utils {
 
     //return true if valid coordinate
     public static boolean validCoordinate(String coord) {
+        if (coord.length() != 2)
+            return false;
+        
         String xStr = coord.substring(0, 1);
         String yStr = coord.substring(1, 2);
         

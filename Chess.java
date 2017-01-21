@@ -63,7 +63,7 @@ public class Chess {
             if (inCheck(color)) {
                 System.out.println("In check!");
                 if (noLegalMoves(color)) {
-                    System.out.println("Is checkmated!");
+                    System.out.println("Checkmated!");
                     break;
                 }
             }
@@ -85,13 +85,14 @@ public class Chess {
             System.out.print("Enter coordinate of piece:\t");
             String coord = Keyboard.readString();
         
-            //check if valid coordinate && there is own piece at coord
-            if (coord.length() != 2 || !Utils.validCoordinate(coord)) {
+            //check if valid coordinate
+            if (!Utils.validCoordinate(coord)) {
                 System.out.println("Invalid coordinates");
                 continue;
             }
             int[] from = Utils.coordToInts(coord);
-            
+
+            //check there is own piece at coord
             Piece p = board[from[0]][from[1]];
             if (p == null || p.isWhite() != color) {
                 System.out.println("Invalid piece at coordinate");
@@ -104,32 +105,37 @@ public class Chess {
             String move = Keyboard.readString();
 
             //check if valid coordinate
-            if (move.length() != 2 || !Utils.validCoordinate(move)) {
+            if (!Utils.validCoordinate(move)) {
                 System.out.println("Invalid coordinates of move");
                 continue;
             }
             int[] to = Utils.coordToInts(move);
             
             //does move if legal, otherwise repeat
-            if (isLegalMove(from, to)) {
+            if (isPosMove(from, to) && isLegalMove(from, to)) {
+		if (isSpecialMove(from, to))
+                    doSpecialMove(from, to);
+                else
+                    doMove(from, to);
                 p.moved();
-                doMove(from, to);
                 break;
             } else {
                 System.out.println("Invalid move");
             }
         }
     }
-    //returns true if legal
-    //simulates the move (undoes after doing)
+    public boolean isPosMove(int[] from, int[] to) {
+        return Utils.contains(posMoves(from[0], from[1]), to);
+    }
+    /*
+      assume possible move
+      legal if not checked when moved there
+      returns true if legal
+    */
     public boolean isLegalMove(int[] from, int[] to) {
-	//is possible move
-	boolean movement = Utils.contains(posMoves(from[0], from[1], false), to);
 	boolean attack = Utils.contains(posMoves(from[0], from[1], true), to);
-	if (!movement && !attack)
-	    return false;
 	
-	//and then do move (if attack, then keep track of attacked piece)
+	//do move (if attack, then keep track of attacked piece)
 	Piece pieceFrom = board[from[0]][from[1]];
 	Piece killed = board[to[0]][to[1]];  //used only for attack
 	doMove(from, to);
@@ -138,18 +144,56 @@ public class Chess {
         boolean legal = !inCheck(pieceFrom.isWhite());
 
 	//undo move
-	if (movement)
-	    doMove(to, from);
-	else {
-	    doMove(to, from);
+	doMove(to, from);
+	if (attack)
 	    board[to[0]][to[1]] = killed;
-	}
         
 	return legal;
     }
     public void doMove(int[] from, int[] to) {
+        if (Utils.equals(from, to))
+            return; //don't change anything
 	board[to[0]][to[1]] = board[from[0]][from[1]];
 	board[from[0]][from[1]] = null;
+    }
+    
+    public boolean isSpecialMove(int[] from, int[] to) {
+        List<int[]> specialMoves = new ArrayList<int[]>();
+        int xCoord = from[0];
+        int yCoord = from[1];
+        addSpecialMoves(xCoord, yCoord, specialMoves, false);
+        addSpecialMoves(xCoord, yCoord, specialMoves, true);
+        return Utils.contains(specialMoves, to);
+    }
+    //assume is special move
+    public void doSpecialMove(int[] from, int[] to) {
+        Piece p = board[from[0]][from[1]];
+
+        //pawn 2-square movement
+        if (p instanceof Pawn) {
+            doMove(from, to);
+            return;
+        }
+        
+        //castling
+        if (p instanceof King) {
+            //move king
+            doMove(from, to);
+            
+            //find rook: go in direction of to
+            int[] fromRook = {0, from[1]};
+            int[] toRook = {0, from[1]};
+            if (to[0] < from[0]) {  //king goes left: rook goes right
+                fromRook[0] = 0;
+                toRook[0] = to[0] + 1;
+            } else {
+                fromRook[0] = 7;
+                toRook[0] = to[0] - 1;
+            }
+            
+            //move rook
+            doMove(fromRook, toRook);
+        }
     }
     
     public boolean inCheck(boolean color) {
@@ -203,11 +247,15 @@ public class Chess {
     
     //returns all legal moves at coordinate
     public List<int[]> legalMoves(int xCoord, int yCoord) {
-        List<int[]> legalMoves = new ArrayList<int[]>();
+        List<int[]> posMoves = posMoves(xCoord, yCoord);
+        return selectLegalMoves(xCoord, yCoord, posMoves);
+    }
+    public List<int[]> selectLegalMoves(int xCoord, int yCoord, List<int[]> posMoves) {
+	List<int[]> legalMoves = new ArrayList<int[]>();
         int[] from = {xCoord, yCoord};
         
         //go through all possible moves and add if they are legal
-        for (int[] to : posMoves(xCoord, yCoord)) {
+        for (int[] to : posMoves) {
             if (isLegalMove(from, to)) {
                 legalMoves.add(to);
             }
@@ -215,13 +263,13 @@ public class Chess {
 
         return legalMoves;
     }
+    
     //get all possible moves (attack and movement)
     public List<int[]> posMoves(int xCoord, int yCoord) {
         List<int[]> posMoves = posMoves(xCoord, yCoord, true);
         posMoves.addAll(posMoves(xCoord, yCoord, false));
         return posMoves;
     }
-
     /*
       get possible move from coordinate (piece) (either movement or attack)
       for movement: only include when moving to empty space
@@ -263,7 +311,7 @@ public class Chess {
         }
 
         //add special moves
-        specialMoves(xCoord, yCoord, posMoves, attack);
+        addSpecialMoves(xCoord, yCoord, posMoves, attack);
         
 	return posMoves;
     }
@@ -300,9 +348,9 @@ public class Chess {
             posMoves.add(toCoord);
         }
         return true;
-        }
+    }
 
-    public void specialMoves(int xCoord, int yCoord, List<int[]> posMoves, boolean attack) {
+    public void addSpecialMoves(int xCoord, int yCoord, List<int[]> posMoves, boolean attack) {
         Piece p = board[xCoord][yCoord];
         
         //pawn 2-square movement
@@ -312,8 +360,52 @@ public class Chess {
                 dy = -2;
             checkAddPosMoves(xCoord, yCoord, posMoves, xCoord, yCoord + dy, attack);
         }
+
+        //castling
+	addCastling(xCoord, yCoord, posMoves, attack);
     }
-    
+    private void addCastling(int xCoord, int yCoord, List<int[]> posMoves, boolean attack) {
+	Piece p = board[xCoord][yCoord];
+	
+	//castling (only for king coord)
+	//only do queen side castling for now
+	if (attack || !(p instanceof King) || p.isMoved())
+	    return;
+
+	int kingEnd = 2;
+	//all spots from king to end spot are empty
+	for (int atX = xCoord - 1; atX >= kingEnd; atX--) {
+	    Piece at = board[atX][yCoord];
+	    if (at != null)
+		return;
+	}
+	
+	//get rook (both sides)
+	Piece rook1 = board[0][yCoord]; //left rook
+	if (rook1 == null || !(rook1 instanceof Rook) || rook1.isMoved())
+	    return;
+
+	//all spots from rook to end spot are empty
+	for (int atX = 1; atX < kingEnd; atX++) {
+	    Piece at = board[atX][yCoord];
+	    if (at != null)
+		return;
+	}
+	
+	//king can't be in check for any square while moving to end spot (including beginning)
+	for (int atX = xCoord; atX >= kingEnd; atX--) {
+	    //do move, check, and undo
+	    int[] from = {xCoord, yCoord};
+	    int[] to = {atX, yCoord};
+	    doMove(from, to);
+	    boolean check = inCheck(p.isWhite());
+	    doMove(to, from);
+	    if (check)
+		return;
+	}
+	
+	checkAddPosMoves(xCoord, yCoord, posMoves, kingEnd, yCoord, false);
+    }
     public void printBoard() {
         Utils.printBoard(board, 3, 5);
     }

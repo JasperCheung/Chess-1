@@ -117,11 +117,13 @@ public class Chess {
             //does move if legal, otherwise repeat
             if (isPosMove(from, to)) {
                 if ((isSpecialMove(from, to) && isLegalSpecialMove(from, to)) || isLegalMove(from, to)) {
-                    updateHistory(from,to);
-                    if (isSpecialMove(from, to))
-                        doSpecialMove(from, to);
-                    else
+                    if (isSpecialMove(from, to)) {
+                        if (!doSpecialMove(from, to))  //failed doing move
+                            continue;
+                    } else {
                         doMove(from, to);
+                    }
+                    updateHistory(from,to);
                     p.moved();
                     break;
                 }
@@ -284,7 +286,7 @@ public class Chess {
         case "r": promoted = new Rook(color); break;
         case "b": promoted = new Bishop(color); break;
         case "n": promoted = new Knight(color); break;
-        default: System.out.println("Unrecognized name of piece"); return false;
+        default: System.out.println("Unrecognized name of piece\n"); return false;
         }
 
         board[coord[0]][coord[1]] = promoted;

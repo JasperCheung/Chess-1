@@ -1,9 +1,12 @@
 import java.util.*;
+import cs1.Keyboard;
 
 public class Utils {
     private static final String letters = "abcdefgh";
     private static final String numbers = "12345678";
 
+    private static final String[] commands = { "history", "pieces", "resign", "draw", "help", "h", "?", "quit", "q", "exit", "e" };
+    
     //return true if valid coordinate
     public static boolean validCoordinate(String coord) {
         if (coord.length() != 2)
@@ -30,6 +33,47 @@ public class Utils {
         return numbers.indexOf(s);
     }
 
+    //return true if valid command
+    public static boolean validCommand(String command) {
+        return Arrays.asList(commands).contains(command);
+    }
+
+    public static void printHistory(ArrayList<int[][]> history) {
+
+    }
+    public static void printPieces(List<Piece> whitePieces, List<Piece> blackPieces) {
+
+    }
+    //return true if resign or draw
+    public static boolean confirmResign() {
+        System.out.println("Resign? (y/n)");
+        boolean res = queryYesNo();
+        if (res)
+            System.out.println("Resigned!");
+        return res;
+    }
+    public static boolean confirmDraw() {
+        System.out.println("Confirm draw with both players? (y/n)");
+        boolean res = queryYesNo();
+        if (res)
+            System.out.println("Draw!");
+        return res;
+    }
+    public static boolean queryYesNo() {
+        String res = Keyboard.readString();
+        res = res.toLowerCase();
+        switch(res) {
+        case "yes": case "y": return true;
+        case "no": case "n": return false;
+        default: return false;
+        }
+    }
+    
+    public static void printHelp() {
+        String s = "Help:\n";
+        System.out.println(s);
+    }
+    
     //checks if list contains el (same values) (array doesn't override .equals)
     //(maybe define Point...)
     public static boolean contains(List<int[]> list, int[] el) {

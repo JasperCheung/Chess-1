@@ -6,13 +6,22 @@ public class Chess {
     //to faciliate easy transfer between Chess coordinates and board
     //(white left rook is (0, 0))
     private Piece[][] board;
-    private ArrayList<int[][]> history;
 
+    //history of moves
+    private List<int[][]> history;
+    
+    //pieces taken
+    private List<Piece> whitePieces;
+    private List<Piece> blackPieces;
+    
+    private boolean continuePlaying;
+    
     public Chess() {
 	board = new Piece[8][8];
 	populateBoard();
 
         history = new ArrayList<int[][]>();
+        continuePlaying = true;
     }
     
     public Piece[][] getBoard(){
@@ -61,10 +70,9 @@ public class Chess {
     }
     
     public void play() {
-	// note: the for loop doesn't have a conditional
-        //keep changing players until checkmated
+        //keep changing players until checkmated/draw/resign
         //also announce when player is checked (and checkmated)
-        for (boolean color = true; ; color = !color) {
+        for (boolean color = true; continuePlaying; color = !color) {
             printBoard();
             
             boolean noLegalMoves = noLegalMoves(color);
@@ -76,7 +84,7 @@ public class Chess {
                     System.out.println("Checkmated!");
                 else
                     System.out.println("Stalemated!");
-                break;
+                continuePlaying = false;
             }
             
             String s;
@@ -92,16 +100,24 @@ public class Chess {
     //complete a turn for a player
     public void turn(boolean color) {
         for (;;) {
-            //get coordinate input from user
-            System.out.print("Enter coordinate of piece:\t");
-            String coord = Keyboard.readString();
+            //get input from user
+            System.out.print("Enter command or coordinate of piece:\t");
+            String input = Keyboard.readString();
         
             //check if valid coordinate
-            if (!Utils.validCoordinate(coord)) {
-                System.out.println("Invalid coordinates");
-                continue;
+            boolean validCoord = Utils.validCoordinate(input);
+            boolean validCommand = Utils.validCommand(input);
+            if (!validCoord) {
+                if (!validCommand) {
+                    System.out.println("Unrecognized command or coordinate of piece");
+                    continue;
+                } else {
+                    if (!doCommand(input))
+                        break;
+                    continue;
+                }
             }
-            int[] from = Utils.coordToInts(coord);
+            int[] from = Utils.coordToInts(input);
 
             //check there is own piece at coord
             Piece p = board[from[0]][from[1]];
@@ -109,7 +125,7 @@ public class Chess {
                 System.out.println("Invalid piece at coordinate");
                 continue;
             }
-            System.out.print(p + " at " + coord.substring(0, 1) + coord.substring(1, 2));
+            System.out.print(p + " at " + input.substring(0, 1) + input.substring(1, 2));
             
             //get input again for move
             System.out.print("\nEnter move:\t");
@@ -598,12 +614,36 @@ public class Chess {
         return true;
     }
 
-    //keeps track of moves
+    //add a move to history
     public void updateHistory(int[] from, int[] to){
 	int[][] move = {from, to};
 	history.add(move);
     }
-    
+
+    //assume valid command
+    //return if continue with turn
+    public boolean doCommand(String command) {
+        command = command.toLowerCase();
+        switch(command) {
+        case "history": Utils.printHistory(history); break;
+        case "pieces": Utils.printPieces(whitePieces, blackPieces); break;
+        case "resign":
+            boolean resign = !Utils.confirmResign(); //confirm resignation
+            continuePlaying = resign;
+            return resign;
+        case "draw":
+            boolean draw = !Utils.confirmDraw(); //confirm with other player
+            continuePlaying = draw;
+            return draw;
+        case "help" : case "h": case "?": Utils.printHelp(); break;
+        case "quit": case "q": case "exit": case "e":
+            continuePlaying = false;
+            System.out.println("Exiting...");
+            return false;
+        }
+        return true;
+    }
+
     public void printBoard() {
         Utils.printBoard(board, 3, 5);
     }

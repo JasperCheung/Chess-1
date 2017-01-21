@@ -236,8 +236,9 @@ public class Chess {
                 return true;
             } else {
                 //pawn promotion
+                if (!promotePawn(from))
+                    return false;
                 doMove(from, to);
-                return promotePawn(to);
             }
         }
         
@@ -283,7 +284,7 @@ public class Chess {
         case "r": promoted = new Rook(color); break;
         case "b": promoted = new Bishop(color); break;
         case "n": promoted = new Knight(color); break;
-        default: System.out.println("Unrecognized name"); return false;
+        default: System.out.println("Unrecognized name of piece"); return false;
         }
 
         board[coord[0]][coord[1]] = promoted;

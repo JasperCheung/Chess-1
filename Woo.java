@@ -40,11 +40,9 @@ public class Woo {
 	c.doMove(from, to);
 	c.printBoard();
 
-        from[0] = 0;
-        from[1] = 0;
-        to[0] = 0;
-        to[1] = 2;
-        c.doMove(from, to);
+        int[] from2 = {0, 0};
+        int[] to2 = {0, 2};
+        c.doMove(from2, to2);
         c.printBoard();
         */
         /* testing posMoves()
@@ -55,14 +53,12 @@ public class Woo {
 
 	System.out.println(Arrays.deepToString(c.posMoves(to[0], to[1], false).toArray()));
 
-        from[0] = 2;
-        from[1] = 1;
-        to[0] = 2;
-        to[1] = 5;
-        c.doMove(from, to);
-	c.printBoard();
-
-	System.out.println(Arrays.deepToString(c.posMoves(to[0], to[1], true).toArray()));
+        int[] from2 = {2, 1};
+        int[] to2 = {2, 5};
+        c.doMove(from2, to2);
+        c.printBoard();
+        
+	System.out.println(Arrays.deepToString(c.posMoves(to2[0], to2[1], true).toArray()));
 
         System.out.println(Arrays.deepToString(c.posMoves(1, 1, false).toArray()));
         System.out.println(Arrays.deepToString(c.posMoves(1, 1, true).toArray()));
@@ -88,9 +84,9 @@ public class Woo {
 	c.doMove(from, to);
 	c.printBoard();
 
-	from[0] = 3; from[1] = 5;
-	to[0] = 4; to[1] = 6;
-	System.out.println(c.isLegalMove(from, to));
+        int[] from2 = {3, 5};
+        int[] to2 = {4, 6};
+	System.out.println(c.isLegalMove(from2, to2));
 	c.printBoard();
 	*/
         /* testing noLegalMoves()
@@ -98,12 +94,14 @@ public class Woo {
         int[] from = {3, 7};
         int[] to = {7, 3};
         c.doMove(from, to);
-        from[0] = 5; from[1] = 1;
-        to[0] = 5; to[1] = 3;
-        c.doMove(from, to);
-        from[0] = 6; from[1] = 1;
-        to[0] = 6; to[1] = 3;
-        c.doMove(from, to);
+
+        int[] from2 = {5, 1};
+        int[] to2 = {5, 3};
+        c.doMove(from2, to2);
+
+        int[] from3 = {6, 1};
+        int[] to3 = {6, 3};
+        c.doMove(from3, to3);
         
         c.printBoard();
         System.out.println(c.noLegalMoves(true));

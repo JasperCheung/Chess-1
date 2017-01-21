@@ -98,6 +98,15 @@ added specialMoves and 2-square movement for pawns, added moved instance variabl
 Fabiha :: neater printBoard and put in Utils
 Jasper :: printBoard labels fixes, comments on new stuff
 
+2017-1-20
+--------------------------------------------------------------
+Kenny :: implemented castling
+
+2017-1-21
+--------------------------------------------------------------
+Kenny :: implemented pawn promotion and en passant and stalemate
+Fabiha :: added history
+
 2017-1-??
 --------------------------------------------------------------
 

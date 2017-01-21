@@ -1,6 +1,6 @@
 Chess - Fabiha Ahmed, Kenny Chen, Jasper Cheung
 APCS1 pd 5
-2017-01-19
+2017-01-21
 
 Chess TODO list
 
@@ -16,7 +16,6 @@ Version 1: movements and attacks
   b. implement movements and attacks for types of pieces
 2. implement making moves in Chess
 
-
 Version 2: barebones chess
 1. Implement isLegalMove()
 2. Implement inCheck()
@@ -30,12 +29,20 @@ Version 2: barebones chess
    c. Gets user input again for move
    d. Does move if the user input is legal
 
--------------------------------
-Next
 
 Version 3: working chess
 1. Implement special moves (castling, en passant, pawn promotion)
-2. Check if draw (stalemate, threefold repetition, fifty-move rule, impossibility of checkmate) and put in play()
+2. Check if draw (stalemate, threefold repetition, fifty-move rule, impossibility of checkmate)
+   a. stalemate
+   -------------------------------
+   On hold(?)
+   
+   b. threefold repetition
+   c. fifty-move rule
+   d. impossibility of checkmate
+
+-------------------------------
+Next
 
 Version 4: commands
 1. Implement commands

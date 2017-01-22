@@ -11,8 +11,8 @@ public class Chess {
     private List<int[][]> history;
     
     //pieces taken
-    private List<Piece> whitePieces;
-    private List<Piece> blackPieces;
+    private List<Piece> blackPiecesTaken;
+    private List<Piece> whitePiecesTaken;
     
     private boolean continuePlaying;
     
@@ -21,6 +21,10 @@ public class Chess {
 	populateBoard();
 
         history = new ArrayList<int[][]>();
+
+        blackPiecesTaken = new ArrayList<Piece>();
+        whitePiecesTaken = new ArrayList<Piece>();
+        
         continuePlaying = true;
     }
     
@@ -146,7 +150,7 @@ public class Chess {
                         if (!doSpecialMove(from, to))  //failed doing move
                             continue;
                     } else {
-                        doMove(from, to);
+                        doMove(from, to, color);
                     }
                     updateHistory(from,to);
                     p.moved();
@@ -193,7 +197,17 @@ public class Chess {
 	board[to[0]][to[1]] = board[from[0]][from[1]];
 	board[from[0]][from[1]] = null;
     }
-    
+    //doMove, but add to pieces taken (color's) if possible
+    public void doMove(int[] from, int[] to, boolean color) {
+        Piece pTo = board[to[0]][to[1]];
+        if (pTo != null) {
+            if (color)
+                blackPiecesTaken.add(pTo);
+            else
+                whitePiecesTaken.add(pTo);
+        }
+        doMove(from, to);
+    }
     public boolean isSpecialMove(int[] from, int[] to) {
         List<int[]> specialMoves = new ArrayList<int[]>();
 
@@ -293,7 +307,7 @@ public class Chess {
                 if (p.isWhite())
                     dy = -1;
                 board[to[0]][to[1] + dy] = null;
-                doMove(from, to);
+                doMove(from, to, p.isWhite());
             }
         }
         
@@ -627,7 +641,7 @@ public class Chess {
         command = command.toLowerCase();
         switch(command) {
         case "history": Utils.printHistory(history); break;
-        case "pieces": Utils.printPieces(whitePieces, blackPieces); break;
+        case "pieces": Utils.printPieces(blackPiecesTaken, whitePiecesTaken); break;
             
         case "resign": return !Utils.confirmResign();
         case "draw": return !Utils.confirmDraw();

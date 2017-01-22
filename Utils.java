@@ -41,8 +41,14 @@ public class Utils {
     public static void printHistory(List<int[][]> history) {
 
     }
-    public static void printPieces(List<Piece> whitePieces, List<Piece> blackPieces) {
-
+    public static void printPieces(List<Piece> blackPiecesTaken, List<Piece> whitePiecesTaken) {
+        String s = "Black pieces taken: ";
+        for (Piece p : blackPiecesTaken)
+            s += p + " ";
+        s += "\nWhite pieces taken: ";
+        for (Piece p : whitePiecesTaken)
+            s += p + " ";
+        System.out.println(s);
     }
     
     //return true if resign or draw

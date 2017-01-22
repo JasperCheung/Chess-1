@@ -167,7 +167,6 @@ public class Chess {
                         if (!doSpecialMove(from, to))  //failed doing move
                             continue;
                     } else {
-                        addHistory(from, to);
                         doMove(from, to, color);
                     }
                     updateMovesDone(from, to);
@@ -195,19 +194,28 @@ public class Chess {
 	boolean attack = Utils.contains(posMoves(from[0], from[1], true), to);
 	
 	//do move (if attack, then keep track of attacked piece)
-	Piece pieceFrom = board[from[0]][from[1]];
 	Piece killed = board[to[0]][to[1]];  //used only for attack
-	move(from, to);
+
+        boolean legal = simulateLegalMove(from, to);
+        
+	if (attack)
+	    board[to[0]][to[1]] = killed;
+        
+	return legal;
+    }
+    //simulate the move and return if it's legal or not (destroys whatever at to)
+    private boolean simulateLegalMove(int[] from, int[] to) {
+        Piece pieceFrom = board[from[0]][from[1]];
+        
+        move(from, to);
 
 	//if own king not in check -> legal
         boolean legal = !inCheck(pieceFrom.isWhite());
 
 	//undo move
 	move(to, from);
-	if (attack)
-	    board[to[0]][to[1]] = killed;
-        
-	return legal;
+
+        return legal;
     }
     public void move(int[] from, int[] to) {
         if (Utils.equals(from, to))
@@ -215,8 +223,9 @@ public class Chess {
 	board[to[0]][to[1]] = board[from[0]][from[1]];
 	board[from[0]][from[1]] = null;
     }
-    //move, but add to pieces taken (color's) if applicable
+    //move, but with side effects (history and pieces taken)
     public void doMove(int[] from, int[] to, boolean color) {
+        addHistory(from, to);
         checkAddPiecesTaken(to);
         move(from, to);
     }
@@ -257,13 +266,9 @@ public class Chess {
                 
                 Piece killed = board[to[0]][to[1] + dy];
                 board[to[0]][to[1] + dy] = null;
-                move(from, to);
                 
-                //if own king not in check -> legal
-                boolean legal = !inCheck(p.isWhite());
-
-                //undo move
-                move(to, from);
+                boolean legal = simulateLegalMove(from, to);
+                
                 board[to[0]][to[1] + dy] = killed;
 
                 return legal;

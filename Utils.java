@@ -38,7 +38,7 @@ public class Utils {
         return Arrays.asList(commands).contains(command);
     }
 
-    public static void printHistory(ArrayList<int[][]> history) {
+    public static void printHistory(List<int[][]> history) {
 
     }
     public static void printPieces(List<Piece> whitePieces, List<Piece> blackPieces) {

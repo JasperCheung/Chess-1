@@ -27,7 +27,7 @@ public class Chess {
     public Piece[][] getBoard(){
 	return board;
     }
-    public ArrayList<int[][]> getHistory() {
+    public List<int[][]> getHistory() {
         return history;
     }
     

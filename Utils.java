@@ -77,8 +77,14 @@ public class Utils {
     }
     
     public static void printHelp() {
-        String s = "Help:\n";
-        System.out.println(s);
+        String s = "help, h, ?: Shows all commands\n";
+	s += "history: Shows all moves done\n";
+	s += "pieces: Shows all pieces taken\n";
+	s += "resign: Forfiet the game, opponenent wins\n";
+	s += "draw: Offers a draw between the players\n";
+	s += "instructions, i: How to play the game\n";
+	s += "quit, q, exit, e: Leaves the game\n"
+      System.out.println(s);
     }
 
     public static void printInstructions() {

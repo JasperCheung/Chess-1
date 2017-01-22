@@ -39,7 +39,9 @@ public class Utils {
     }
 
     public static void printHistory(List<int[][]> history) {
-
+	System.out.println("Moves Done:");
+        //Do this!!!
+		
     }
     public static void printPieces(List<Piece> blackPiecesTaken, List<Piece> whitePiecesTaken) {
         String s = "Black pieces taken: ";
@@ -80,10 +82,10 @@ public class Utils {
         String s = "help, h, ?: Shows all commands\n";
 	s += "history: Shows all moves done\n";
 	s += "pieces: Shows all pieces taken\n";
-	s += "resign: Forfiet the game, opponenent wins\n";
-	s += "draw: Offers a draw between the players\n";
+	s += "resign: Forfeit the game, opponent wins\n";
+	s += "draw: Offer a draw between the players\n";
 	s += "instructions, i: How to play the game\n";
-	s += "quit, q, exit, e: Leaves the game\n"
+	s += "quit, q, exit, e: Leaves the game\n";
       System.out.println(s);
     }
 

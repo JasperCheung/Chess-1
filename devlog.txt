@@ -14,12 +14,12 @@ wow we so BOSS bc...
 
 UNRESOLVED ISSUES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-blah blah pesky bug...
-maybe some of these will move into the Obs.Ovrcm section...
+We implemented stalemate but did not implement the other draws, threefold repetition, fifty-move rule, and impossibility of checkmate.
 
 COOL STUFF LEARNED
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The continue key word in  a loop starts again at the conditional of the loop without running the rest of the code following continue.
+The switch statement checks a variable's equality against a list of values and executes one statement out of a list of conditionals.
 
 MID-DEVELOPMENT DESIGN CHANGES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

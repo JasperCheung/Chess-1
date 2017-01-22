@@ -14,19 +14,19 @@ public class Woo {
 	System.out.println("\n\nAPCS1 Pd5");
 	System.out.println("By Fabiha Ahmed, Kenny Chen, Jasper Cheung");
 	System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-	System.out.println("\n\nHow to Play...");
-	System.out.println("The game will start with White making the first move.");
-	System.out.println("Capital letters are white pieces");
-	System.out.println("To move input the cordinates of the piece you want to move(ex. a1).");
-	System.out.println("Then input the coords of the location (letternumber)");
-	System.out.println("Castling works by moving your king to the cords of the rook");
-	System.out.println("You can also type a command instead of cord, type h, ? or help for a list");
-	System.out.println("Type play to begin: ");
-	String x = Keyboard.readString();
-	if (x.equals("play")){
-	    System.out.print("\u001b[2J\u001b[H");
-	    Chess c = new Chess();
-	    c.play();}
+        String instructions = "\n\nHow to Play...";
+	instructions +="\nThe game will start with White making the first move.";
+	instructions +="\nCapital letters are white pieces";
+    	instructions +="\nTo move input the cordinates of the piece you want to move(ex. a1).";
+	instructions +="\nThen input the coords of the location (letternumber)";
+	instructions +="\nCastling works by moving your king to the cords of the rook";
+	instructions +="\nYou can also type a command instead of cord, type h, ? or help for a list";
+	System.out.println(instructions);
+        System.out.println("Type anything to begin:");
+        Keyboard.readString();
+	System.out.print("\n");
+	Chess c = new Chess();
+	c.play();
         
         
         /* testing toString

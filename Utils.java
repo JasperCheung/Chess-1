@@ -5,7 +5,7 @@ public class Utils {
     private static final String letters = "abcdefgh";
     private static final String numbers = "12345678";
 
-    private static final String[] commands = { "history", "pieces", "resign", "draw", "help", "h", "?", "quit", "q", "exit", "e" };
+    private static final String[] commands = { "history", "pieces", "resign", "draw", "help", "h", "?", "quit", "q", "exit", "e", "instructions" };
     
     //return true if valid coordinate
     public static boolean validCoordinate(String coord) {
@@ -79,6 +79,19 @@ public class Utils {
     public static void printHelp() {
         String s = "Help:\n";
         System.out.println(s);
+    }
+
+    public static void printInstructions() {
+	 String instructions = "\n\nHow to Play...";
+
+	instructions +="\nThe game will start with White making the first move.";
+	instructions +="\nCapital letters are white pieces";
+    	instructions +="\nTo move input the cordinates of the piece you want to move(ex. a1).";
+	instructions +="\nThen input the coords of the location (letternumber)";
+	instructions +="\nCastling works by moving your king to the cords of the rook";
+	instructions +="\nYou can also type a command instead of cord, type h, ? or help for a list";
+	System.out.println(instructions);
+	
     }
     
     //checks if list contains el (same values) (array doesn't override .equals)

@@ -217,14 +217,7 @@ public class Chess {
     }
     //move, but add to pieces taken (color's) if applicable
     public void doMove(int[] from, int[] to, boolean color) {
-        Piece pTo = board[to[0]][to[1]];
-        if (pTo != null) {
-            if (color)
-                blackPiecesTaken.add(pTo);
-            else
-                whitePiecesTaken.add(pTo);
-        }
-
+        checkAddPiecesTaken(to);
         move(from, to);
     }
     public boolean isSpecialMove(int[] from, int[] to) {
@@ -342,8 +335,12 @@ public class Chess {
                 int dy = 1;
                 if (p.isWhite())
                     dy = -1;
+
+                int[] killed = {to[0], to[1] + dy};
+                checkAddPiecesTaken(killed);
                 board[to[0]][to[1] + dy] = null;
-                doMove(from, to, p.isWhite());
+                
+                move(from, to);
             }
         }
         
@@ -695,6 +692,17 @@ public class Chess {
     private void addRestrictiveName(Piece p) {
         if (!(p instanceof Pawn))
             history += p.toString().toUpperCase();
+    }
+
+    public void checkAddPiecesTaken(int[] coord) {
+        Piece p = board[coord[0]][coord[1]];
+        if (p == null)
+            return;
+        
+        if (!p.isWhite())
+            blackPiecesTaken.add(p);
+        else
+            whitePiecesTaken.add(p);
     }
     
     //assume valid command

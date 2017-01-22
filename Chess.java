@@ -23,7 +23,7 @@ public class Chess {
 	populateBoard();
 
         movesDone = new ArrayList<int[][]>();
-        history = " ";
+        history = "";
         
         blackPiecesTaken = new ArrayList<Piece>();
         whitePiecesTaken = new ArrayList<Piece>();
@@ -309,22 +309,17 @@ public class Chess {
                 addHistory(from, to);
                 move(from, to);
             } else if (to[1] == 7 || to[1] == 0){
+                //keep temporary string for history (before promotion)
+                String temp = historyString(from, to);
+                
                 //pawn promotion
                 if (!promotePawn(from))
                     return false;
 
-                Piece pTo = board[to[0]][to[1]];
-                history += Utils.coordToString(from);
-                //if movement, then put "-" otherwise "x" and letter
-                if (pTo == null) {
-                    history += "-";
-                } else {
-                    history += "x";
-                    addRestrictiveName(pTo);
-                }
                 Piece promoted = board[from[0]][from[1]];
-                //for pawn promotion, put the new symbol after
-                history += Utils.coordToString(to) + promoted;
+                
+                //for pawn promotion, put = and the new symbol after
+                history += temp + "=" + promoted.toString().toUpperCase();
                 
                 move(from, to);
             } else {
@@ -672,26 +667,34 @@ public class Chess {
 	movesDone.add(move);
     }
     public void addHistory(int[] from, int[] to) {
+        history += historyString(from, to);
+    }
+    public String historyString(int[] from, int[] to) {
+        String s;
+        
         Piece p = board[from[0]][from[1]];
         Piece pTo = board[to[0]][to[1]];
 
         //not pawn, then put capital letter
-        addRestrictiveName(p);
-        history += Utils.coordToString(from);
+        s = restrictiveName(p);
+        s += Utils.coordToString(from);
 
         //if movement, then put "-" otherwise "x" and letter
         if (pTo == null) {
-            history += "-";
+            s += "-";
         } else {
-            history += "x";
-            addRestrictiveName(pTo);
+            s += "x";
+            s += restrictiveName(pTo);
         }
 
-        history += Utils.coordToString(to);
+        s += Utils.coordToString(to);
+        
+        return s;
     }
-    private void addRestrictiveName(Piece p) {
+    private String restrictiveName(Piece p) {
         if (!(p instanceof Pawn))
-            history += p.toString().toUpperCase();
+            return p.toString().toUpperCase();
+        return "";
     }
 
     public void checkAddPiecesTaken(int[] coord) {

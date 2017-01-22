@@ -20,7 +20,7 @@ public class Woo {
     	instructions +="\nTo move input the cordinates of the piece you want to move(ex. a1).";
 	instructions +="\nThen input the coords of the location (letternumber)";
 	instructions +="\nCastling works by moving your king to the cords of the rook";
-	instructions +="\nYou can also type a command instead of cord, type h, ? or help for a list";
+	instructions +="\nYou can also type a command instead of cord, type h, ? or help for a list of commands";
 	System.out.println(instructions);
         System.out.println("Type anything to begin:");
         Keyboard.readString();

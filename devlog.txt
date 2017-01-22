@@ -106,6 +106,7 @@ Kenny :: implemented castling
 --------------------------------------------------------------
 Kenny :: implemented pawn promotion and en passant and stalemate
 Fabiha :: added history
+Jasper :: Start screen, commands, comments
 
 2017-1-??
 --------------------------------------------------------------

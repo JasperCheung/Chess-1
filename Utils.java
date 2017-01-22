@@ -5,7 +5,7 @@ public class Utils {
     private static final String letters = "abcdefgh";
     private static final String numbers = "12345678";
 
-    private static final String[] commands = { "history", "pieces", "resign", "draw", "help", "h", "?", "quit", "q", "exit", "e", "instructions" };
+    private static final String[] commands = { "history", "pieces", "resign", "draw", "help", "h", "?", "instructions", "i", "quit", "q", "exit", "e" };
     
     //return true if valid coordinate
     public static boolean validCoordinate(String coord) {
@@ -35,7 +35,7 @@ public class Utils {
 
     //return true if valid command
     public static boolean validCommand(String command) {
-        return Arrays.asList(commands).contains(command);
+        return Arrays.asList(commands).contains(command.toLowerCase());
     }
 
     public static void printHistory(List<int[][]> history) {
@@ -82,14 +82,15 @@ public class Utils {
     }
 
     public static void printInstructions() {
-	 String instructions = "\n\nHow to Play...";
+        String instructions = "\nHow to Play:\n";
 
 	instructions +="\nThe game will start with White making the first move.";
-	instructions +="\nCapital letters are white pieces";
-    	instructions +="\nTo move input the cordinates of the piece you want to move(ex. a1).";
-	instructions +="\nThen input the coords of the location (letternumber)";
-	instructions +="\nCastling works by moving your king to the cords of the rook";
-	instructions +="\nYou can also type a command instead of cord, type h, ? or help for a list of commands";
+	instructions +="\nCapital letters are white pieces, lowercase letters are black pieces.";
+    	instructions +="\nTo move, input the coordinates of the piece you want to move (eg. d4).";
+	instructions +="\nThen input the coordinates of the location (eg. d6).";
+	instructions +="\nCastling works by moving your king to the coordinates of the rook.";
+	instructions +="\nYou can also type a command instead of moving; type h, ?, or help for a list of possible commands.\n";
+        
 	System.out.println(instructions);
 	
     }

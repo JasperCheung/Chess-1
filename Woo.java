@@ -14,14 +14,9 @@ public class Woo {
 	System.out.println("\n\nAPCS1 Pd5");
 	System.out.println("By Fabiha Ahmed, Kenny Chen, Jasper Cheung");
 	System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        String instructions = "\n\nHow to Play...";
-	instructions +="\nThe game will start with White making the first move.";
-	instructions +="\nCapital letters are white pieces";
-    	instructions +="\nTo move input the cordinates of the piece you want to move(ex. a1).";
-	instructions +="\nThen input the coords of the location (letternumber)";
-	instructions +="\nCastling works by moving your king to the cords of the rook";
-	instructions +="\nYou can also type a command instead of cord, type h, ? or help for a list of commands";
-	System.out.println(instructions);
+        
+        Utils.printInstructions();
+        
         System.out.println("Type anything to begin:");
         Keyboard.readString();
 	System.out.print("\n");

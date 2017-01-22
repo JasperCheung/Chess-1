@@ -640,7 +640,6 @@ public class Chess {
     public boolean doCommand(String command) {
         command = command.toLowerCase();
         switch(command) {
-	
         case "history": Utils.printHistory(history); break;
         case "pieces": Utils.printPieces(blackPiecesTaken, whitePiecesTaken); break;
             
@@ -648,7 +647,7 @@ public class Chess {
         case "draw": return !Utils.confirmDraw();
             
         case "help" : case "h": case "?": Utils.printHelp(); break;
-	case "instructions": Utils.printInstructions(); break;
+        case "instructions": case "i": Utils.printInstructions(); break;
         case "quit": case "q": case "exit": case "e":
             System.out.println("Exiting...");
             return false;

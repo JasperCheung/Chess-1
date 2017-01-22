@@ -10,7 +10,21 @@ Chess
 ------------------------------------------
 OBSTACLES OVERCOME
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-wow we so BOSS bc...
+Used official chess notation to take input and produce output, by using final strings to convert.
+A bigger and more realistic board.
+Both ArrayLists and 2-d arrays were used. ArrayLists of 2-d arrays also were used to keep track of moves.
+Color was determined using a boolean instance variable.
+Movement was covered with a Movement class that was instantiate in the constructor of pieces. 
+Able to take different inputs for commands using switch command.
+Avoid cluttered classes using a Utils class containing helper methods.
+Input was taken using keyboard class from class.
+All possible moves were determined using the movement class
+To determine if moves were legal we had a series of methods. Checked if pieces were the same color as the user see if any pieces were in the way. After that, the moves were crossed referenced with all possible moves.
+There were special cases with 2 square pawn moves, castling, pawn promotion, and en passant. This was covered by a method that would add these moves into possible moves if conditions were met.
+Checkmate was determined if there is no legal moves and if the king is in check.
+Stalemate was determined if there is no legal moves and the king is not in check.
+ASCII text art!!! Chess!
+
 
 UNRESOLVED ISSUES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,13 +32,29 @@ We implemented stalemate but did not implement the other draws, threefold repeti
 
 COOL STUFF LEARNED
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 The continue key word in  a loop starts again at the conditional of the loop without running the rest of the code following continue.
 The switch statement checks a variable's equality against a list of values and executes one statement out of a list of conditionals.
+\ is an escape character so you can't output it as a string alone, use \\ to get those slashes in ASCII text art. 
+List is the interface that Arraylist implements, used as variable name when we instantiated ArrayLists in case we had uses for other lists or methods. 
+There were characters that could clear screens or input white boxes in the terminal. Choose not to use them. 
+Class Arrays has methods to print contents of arrays and other methods used to test for our board and arrays of possible moves. 
+ 
+
 
 MID-DEVELOPMENT DESIGN CHANGES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 We added new classes (Movement, Utils) we did not originally plan for.
-we changed ___ to ___ bc...
+Movement was a class instantiated in all the pieces to determine how they move/attack, also used to determine if moves were legal.
+Utils was a class that was used as a general class containing helper methods because we felt that our classes were getting cluttered. Ex. The aesthetics of the board, checking if the commands were valid, changing user inputs to be used in code. 
+
+We decided to use official Chess notation instead of just number coordinates because we felt that it would be better for user experience.
+
+Board changed from a barebones that only had letters on the terminal to our current one because it was clearer to see the state of the board and the spaces on the board. 
+
+We implemented stalemate but did not implement the other draws, threefold repetition, fifty-move rule, and impossibility of checkmate. Because those required us to keep all states of the board and then compare them.
+
+
 
 LESSONS LEARNED
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -77,6 +77,7 @@ public class Chess {
         //keep changing players until checkmated/draw/resign
         //also announce when player is checked (and checkmated)
         for (boolean color = true; continuePlaying; color = !color) {
+	    System.out.print(String.format("\033[H\033[2J"));
             printBoard();
             
             boolean noLegalMoves = noLegalMoves(color);
@@ -99,6 +100,8 @@ public class Chess {
             System.out.println(s + "'s turn:");
             turn(color);
             System.out.println();
+
+
         }
     }
     //complete a turn for a player

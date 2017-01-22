@@ -40,6 +40,14 @@ public class Utils {
 
     public static void printHistory(List<int[][]> history) {
 	System.out.println("Moves Done:");
+	for(int i = 0; i < history.size(); i++){
+	    String from = letters.substring(history.get(i)[0][0], history.get(i)[0][0] + 1);
+	    String to = letters.substring(history.get(i)[1][0], history.get(i)[1][0] + 1);	
+	    from += 1 + history.get(i)[0][1];
+	    to += 1 + history.get(i)[1][1];
+	    System.out.print(i + 1 + ". ");
+	    System.out.print( from +  " to " + to + "\n");
+	}
         //Do this!!!
 		
     }

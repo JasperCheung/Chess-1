@@ -33,24 +33,19 @@ public class Utils {
         return numbers.indexOf(s);
     }
 
+    //get coord, return corresponding string
+    //assume coord is valid
+    public static String coordToString(int[] coord) {
+        int letter = coord[0];
+        int number = coord[1];
+        return letters.substring(letter, letter + 1) + numbers.substring(number, number + 1);
+    }
+    
     //return true if valid command
     public static boolean validCommand(String command) {
         return Arrays.asList(commands).contains(command.toLowerCase());
     }
 
-    public static void printHistory(List<int[][]> history) {
-	System.out.println("Moves Done:");
-	for(int i = 0; i < history.size(); i++){
-	    String from = letters.substring(history.get(i)[0][0], history.get(i)[0][0] + 1);
-	    String to = letters.substring(history.get(i)[1][0], history.get(i)[1][0] + 1);	
-	    from += 1 + history.get(i)[0][1];
-	    to += 1 + history.get(i)[1][1];
-	    System.out.print(i + 1 + ". ");
-	    System.out.print( from +  " to " + to + "\n");
-	}
-        //Do this!!!
-		
-    }
     public static void printPieces(List<Piece> blackPiecesTaken, List<Piece> whitePiecesTaken) {
         String s = "Black pieces taken: ";
         for (Piece p : blackPiecesTaken)

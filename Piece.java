@@ -9,7 +9,7 @@ public abstract class Piece {
     protected boolean moved;
     
     public Piece(boolean init) {
-	white = init;
+        white = init;
         moved = false;
         createMovements();
         // point attacks to movements

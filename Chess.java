@@ -7,22 +7,25 @@ public class Chess {
     //(white left rook is (0, 0))
     private Piece[][] board;
 
-    //history of moves
-    private List<int[][]> movesDone;
+    //last move: from and to
+    private int[][] lastMove;
+    
     //in reversible algebraic notation (for simplicity)
     private String history;
     
     //pieces taken
     private List<Piece> blackPiecesTaken;
     private List<Piece> whitePiecesTaken;
-    
-    private boolean continuePlaying;
-    
-    public Chess() {
-	board = new Piece[8][8];
-	populateBoard();
 
-        movesDone = new ArrayList<int[][]>();
+    //keep track if continue playing
+    private boolean continuePlaying;
+
+    //~~~~~Constructor
+    public Chess() {
+        board = new Piece[8][8];
+        populateBoard();
+
+        lastMove = new int[2][2];
         history = "";
         
         blackPiecesTaken = new ArrayList<Piece>();
@@ -30,52 +33,47 @@ public class Chess {
         
         continuePlaying = true;
     }
-    
-    public Piece[][] getBoard(){
-	return board;
-    }
-    public List<int[][]> getMovesDone() {
-        return movesDone;
-    }
-    
+
+    //~~~~~Initializing board
     //Loops through the board/ [][] and populates
     private void populateBoard() {
-	for (int x = 0; x < 8; x++) {
-	    for (int y = 0; y < 8; y++) {
-		setBoardPiece(x, y);
-	    }
-	}
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                setBoardPiece(x, y);
+            }
+        }
     }
     // create 1 piece on board
     private void setBoardPiece(int x, int y) {
         if (y > 1 && y < 6)
             return;
         
-	Piece p;
+        Piece p;
         
-	if (y == 0 || y == 7) {
-	    // white = true, black = false
-	    boolean color = y == 0;
+        if (y == 0 || y == 7) {
+            // white = true, black = false
+            boolean color = y == 0;
             
-	    if (x == 0 || x == 7)
-		p = new Rook(color);
-	    else if (x == 1 || x == 6)
-		p = new Knight(color);
-	    else if (x == 2 || x == 5)
-		p = new Bishop(color);
-	    else if (x == 3)
-		p = new Queen(color);
-	    else // x == 4
-		p = new King(color);
+            if (x == 0 || x == 7)
+                p = new Rook(color);
+            else if (x == 1 || x == 6)
+                p = new Knight(color);
+            else if (x == 2 || x == 5)
+                p = new Bishop(color);
+            else if (x == 3)
+                p = new Queen(color);
+            else // x == 4
+                p = new King(color);
             
-	} else { //y == 1 or 6
+        } else { //y == 1 or 6
             boolean color = y == 1;
             p = new Pawn(color);
         }
         
         board[x][y] = p;
     }
-    
+
+    //~~~~~Play
     public void play() {
         //keep changing players until checkmated/draw/resign
         //also announce when player is checked (and checkmated)
@@ -87,12 +85,7 @@ public class Chess {
                 counter++;
             }
             
-            String s;
-            if (color)
-                s = "White";
-            else
-                s = "Black";
-            System.out.println(s + "'s turn:");
+            System.out.println(Utils.colorToString(color) + "'s turn:");
             turn(color);
             System.out.println();
 
@@ -118,6 +111,7 @@ public class Chess {
 
         System.out.println(history);
     }
+    //~~~~~Turn
     //complete a turn for a player
     public void turn(boolean color) {
         for (;;) {
@@ -125,11 +119,9 @@ public class Chess {
             System.out.print("Enter command or coordinate of piece:\t");
             String input = Keyboard.readString();
         
-            //check if valid coordinate
-            boolean validCoord = Utils.validCoordinate(input);
-            boolean validCommand = Utils.validCommand(input);
-            if (!validCoord) {
-                if (!validCommand) {
+            //check if valid coordinate or command
+            if (!Utils.validCoordinate(input)) {
+                if (!Utils.validCommand(input)) {
                     System.out.println("Unrecognized command or coordinate of piece");
                 } else {
                     if (!doCommand(input)) {
@@ -161,26 +153,40 @@ public class Chess {
             int[] to = Utils.coordToInts(move);
             
             //does move if legal, otherwise repeat
-            if (isPosMove(from, to)) {
-                if ((isSpecialMove(from, to) && isLegalSpecialMove(from, to)) || isLegalMove(from, to)) {
-                    if (isSpecialMove(from, to)) {
-                        if (!doSpecialMove(from, to))  //failed doing move
-                            continue;
-                    } else {
-                        doMove(from, to, color);
-                    }
-                    updateMovesDone(from, to);
-                    p.moved();
-                    break;
-                }
-            }
+            if (turnMove(from, to, p))
+                break;
             System.out.println("Invalid move");
         }
     }
+    //does the move for a turn; true if successful
+    private boolean turnMove(int[] from, int[] to, Piece pFrom) {
+        if (!isPosMove(from, to))
+            return false;
+        
+        if (isSpecialMove(from, to)) {
+            if (!isLegalSpecialMove(from, to))
+                return false;
+            if (!doSpecialMove(from, to))  //failed doing move
+                return false;
+        } else if (isLegalMove(from, to)) {
+            addHistory(from, to);
+            checkAddPiecesTaken(to);
+            move(from, to);
+        } else {
+            return false;
+        }
+        
+        updateLastMove(from, to);
+        pFrom.moved();
+        return true;
+    }
+    
+    //~~~~~Is- and Do- possible, legal, special moves
     /*
-      Possible moves vs Legal moves:
+      Possible moves vs Legal moves vs Special moves:
       Possible moves only get the movements and check the boundaries
       Legal moves are possible moves but have also checked that they don't leave the king in check
+      Special moves are exceptions to normal playing (ie. castling, en passant, and pawn promotion)
     */
     public boolean isPosMove(int[] from, int[] to) {
         return Utils.contains(posMoves(from[0], from[1]), to);
@@ -191,17 +197,16 @@ public class Chess {
       returns true if legal
     */
     public boolean isLegalMove(int[] from, int[] to) {
-	boolean attack = Utils.contains(posMoves(from[0], from[1], true), to);
-	
-	//do move (if attack, then keep track of attacked piece)
-	Piece killed = board[to[0]][to[1]];  //used only for attack
-
+        //do move (if attack, then keep track of attacked piece)
+        Piece killed = board[to[0]][to[1]];
+        boolean attack = killed != null;
+        
         boolean legal = simulateLegalMove(from, to);
         
-	if (attack)
-	    board[to[0]][to[1]] = killed;
+        if (attack)
+            board[to[0]][to[1]] = killed;
         
-	return legal;
+        return legal;
     }
     //simulate the move and return if it's legal or not (destroys whatever at to)
     private boolean simulateLegalMove(int[] from, int[] to) {
@@ -209,35 +214,29 @@ public class Chess {
         
         move(from, to);
 
-	//if own king not in check -> legal
+        //if own king not in check -> legal
         boolean legal = !inCheck(pieceFrom.isWhite());
 
-	//undo move
-	move(to, from);
+        //undo move
+        move(to, from);
 
         return legal;
     }
     public void move(int[] from, int[] to) {
         if (Utils.equals(from, to))
             return; //don't change anything
-	board[to[0]][to[1]] = board[from[0]][from[1]];
-	board[from[0]][from[1]] = null;
-    }
-    //move, but with side effects (history and pieces taken)
-    public void doMove(int[] from, int[] to, boolean color) {
-        addHistory(from, to);
-        checkAddPiecesTaken(to);
-        move(from, to);
+        board[to[0]][to[1]] = board[from[0]][from[1]];
+        board[from[0]][from[1]] = null;
     }
     public boolean isSpecialMove(int[] from, int[] to) {
-        List<int[]> specialMoves = new ArrayList<int[]>();
-
         Piece p = board[from[0]][from[1]];
         //pawn promotion
         if (p instanceof Pawn && p.isMoved() && isPosMove(from, to)) {
             if (to[1] == 7 || to[1] == 0)
                 return true;
         }
+
+        List<int[]> specialMoves = new ArrayList<int[]>();
         
         int xCoord = from[0];
         int yCoord = from[1];
@@ -251,11 +250,8 @@ public class Chess {
         Piece p = board[from[0]][from[1]];
         
         if (p instanceof Pawn) {
-            if (!p.isMoved()) {
-                //pawn 2-square movement
-                return isLegalMove(from, to);
-            } else if (to[1] == 7 || to[1] == 0){
-                //pawn promotion
+            //pawn 2-square movement and pawn promotion, check if legal
+            if (!p.isMoved() || to[1] == 7 || to[1] == 0) {
                 return isLegalMove(from, to);
             } else {
                 //en passant
@@ -293,10 +289,8 @@ public class Chess {
             for (int atX = start; atX <= end; atX += 1) {
                 //do move, check, and undo
                 int[] toSpot = {atX, from[1]};
-                move(from, toSpot);
-                boolean check = inCheck(p.isWhite());
-                move(toSpot, from);
-                if (check)
+                boolean legal = simulateLegalMove(from, toSpot);
+                if (!legal)
                     return false;
             }
         }
@@ -312,7 +306,6 @@ public class Chess {
             if (!p.isMoved()) {
                 //pawn 2-square movement
                 addHistory(from, to);
-                move(from, to);
             } else if (to[1] == 7 || to[1] == 0){
                 //keep temporary string for history (before promotion)
                 String temp = historyString(from, to);
@@ -320,13 +313,12 @@ public class Chess {
                 //pawn promotion
                 if (!promotePawn(from))
                     return false;
-
                 Piece promoted = board[from[0]][from[1]];
                 
                 //for pawn promotion, put = and the new symbol after
                 history += temp + "=" + promoted.toString().toUpperCase();
-                
-                move(from, to);
+
+                checkAddPiecesTaken(to);
             } else {
                 //en passant
                 //also kill piece
@@ -339,16 +331,17 @@ public class Chess {
                 int[] killed = {to[0], to[1] + dy};
                 checkAddPiecesTaken(killed);
                 board[to[0]][to[1] + dy] = null;
-                
-                move(from, to);
             }
+            move(from, to);
         }
         
         //castling (to is coordinate of rook)
         if (p instanceof King) {
             int kingEnd = 6;
-            if (to[0] < from[0]) {//move left
+            int dx = -1;
+            if (to[0] < from[0]) {  //king moves left
                 kingEnd = 2;
+                dx = 1;
                 history += "O-O-O";
             } else {
                 history += "O-O";
@@ -359,9 +352,6 @@ public class Chess {
             move(from, end);
 
             //get rook end position
-            int dx = -1;
-            if (to[0] < from[0])
-                dx = 1;
             int[] toRook = {kingEnd + dx, from[1]};
             
             //move rook
@@ -385,7 +375,7 @@ public class Chess {
         boolean color = pawn.isWhite();
         Piece promoted;
         
-        switch(name) {
+        switch (name) {
         case "q": promoted = new Queen(color); break;
         case "r": promoted = new Rook(color); break;
         case "b": promoted = new Bishop(color); break;
@@ -397,7 +387,8 @@ public class Chess {
         
         return true;
     }
-    
+
+    //~~~~~inCheck
     public boolean inCheck(boolean color) {
         //get coordinate of king
         int[] kingCoord = new int[2];
@@ -415,7 +406,7 @@ public class Chess {
         }
 
         //go through all pieces of enemy player
-	//if they can attack friendly king -> in check
+        //if they can attack friendly king -> in check
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 Piece p = board[x][y];
@@ -426,9 +417,10 @@ public class Chess {
             }
         }
         
-	return false;
+        return false;
     }
-    
+
+    //~~~~~noLegalMoves
     //if checked and noLegalMoves -> checkmated
     //otherwise stalemate
     public boolean noLegalMoves(boolean color) {
@@ -446,7 +438,8 @@ public class Chess {
 
         return true;
     }
-    
+
+    //~~~~~Legal moves
     //returns all legal moves at coordinate
     public List<int[]> legalMoves(int xCoord, int yCoord) {
         List<int[]> posMoves = posMoves(xCoord, yCoord);
@@ -454,19 +447,23 @@ public class Chess {
     }
     //assume posMoves is valid
     public List<int[]> selectLegalMoves(int xCoord, int yCoord, List<int[]> posMoves) {
-	List<int[]> legalMoves = new ArrayList<int[]>();
+        List<int[]> legalMoves = new ArrayList<int[]>();
         int[] from = {xCoord, yCoord};
         
         //go through all possible moves and add if they are legal
         for (int[] to : posMoves) {
-            if ((isSpecialMove(from, to) && isLegalSpecialMove(from, to)) || isLegalMove(from, to)) {
-                legalMoves.add(to);
+            if (isSpecialMove(from, to)) {
+                if (isLegalSpecialMove(from, to))
+                    legalMoves.add(to);
             }
+            else if (isLegalMove(from, to))
+                legalMoves.add(to);
         }
 
         return legalMoves;
     }
-    
+
+    //~~~~~Possible moves and adding special moves
     //get all possible moves (attack and movement)
     public List<int[]> posMoves(int xCoord, int yCoord) {
         List<int[]> posMoves = posMoves(xCoord, yCoord, true);
@@ -480,8 +477,8 @@ public class Chess {
       returns list of absolute coordinates
     */
     public List<int[]> posMoves(int xCoord, int yCoord, boolean attack) {
-	Piece p = board[xCoord][yCoord];
-	Movement m = p.getMovements();
+        Piece p = board[xCoord][yCoord];
+        Movement m = p.getMovements();
         if (attack && p.getMovements() != p.getAttacks())  //movements and attacks don't point to same
             m = p.getAttacks();
         
@@ -491,17 +488,17 @@ public class Chess {
         //keep going w/ differences until piece or border reached
         List<int[]> differences = new ArrayList<int[]>();
         //add horizVert differences
-	if (m.isHorizVert()) {
+        if (m.isHorizVert()) {
             int[][] differenceHV = { {-1, 0}, {1, 0},   //horiz
                                      {0, -1}, {0, 1} }; //vert
             differences.addAll(Arrays.asList(differenceHV));
-	}
-	//add diags differences
-	if (m.isDiags()) {
+        }
+        //add diags differences
+        if (m.isDiags()) {
             int[][] differenceD = { {-1, -1}, {-1, 1},
                                     {1, -1}, {1, 1} };
             differences.addAll(Arrays.asList(differenceD));
-	}
+        }
         //add all possible movements for differences
         for (int[] diffxy : differences)
             posMoves(xCoord, yCoord, posMoves, diffxy[0], diffxy[1], attack);
@@ -520,18 +517,18 @@ public class Chess {
         //add special moves
         addSpecialMoves(xCoord, yCoord, posMoves, attack);
         
-	return posMoves;
+        return posMoves;
     }
     //add possible movements given a dx and dy (for horiz/vert/diags)
     public void posMoves(int xCoord, int yCoord, List<int[]> posMoves, int dx, int dy, boolean attack) {
-	int atX = xCoord;
-	int atY = yCoord;
-	for (;;) {
-	    atX += dx;
-	    atY += dy;
-	    if (!checkAddPosMoves(xCoord, yCoord, posMoves, atX, atY, attack)) //false, don't check anymore
+        int atX = xCoord;
+        int atY = yCoord;
+        for (;;) {
+            atX += dx;
+            atY += dy;
+            if (!checkAddPosMoves(xCoord, yCoord, posMoves, atX, atY, attack)) //false, don't check anymore
                 break;
-	}
+        }
     }
     //try to add possible move given coordinates.
     //return false if out of border or there was piece there
@@ -563,9 +560,9 @@ public class Chess {
         if (p instanceof Pawn) {
             //pawn 2-square movement
             if (!attack && !p.isMoved()) {
-                int dy = 1;
-                if (!p.isWhite())
-                    dy = -1;
+                int dy = -1;
+                if (p.isWhite())
+                    dy = 1;
                 
                 //no piece 1 square ahead
                 Piece at = board[xCoord][yCoord + dy];
@@ -579,49 +576,43 @@ public class Chess {
 
             //en passant
             if (attack && p.isMoved()) {
-                //check movesDone (pawn to left or right && did double-move)
-                int[][] lastMove = movesDone.get(movesDone.size() - 1);
+                //check lastMove (pawn to left or right && did double-move)
                 int[] lastFrom = lastMove[0];
                 int[] lastTo = lastMove[1];
                 Piece atLastTo = board[lastTo[0]][lastTo[1]];
                 if (!(atLastTo instanceof Pawn) || lastTo[1] != yCoord || Math.abs(lastFrom[1] - lastTo[1]) != 2 || Math.abs(lastTo[0] - xCoord) != 1)
                     return;
 
-                //left or right
-                int dx = 1;
-                if (lastTo[0] < xCoord)
-                    dx = -1;
-
                 int dy = -1;
                 if (p.isWhite())
                     dy = 1;
                 
-                int[] to = {xCoord + dx, yCoord + dy};
+                int[] to = {lastTo[0], yCoord + dy};
                 posMoves.add(to);
             }
         }
         
         //castling
-	addCastling(xCoord, yCoord, posMoves, attack);
+        addCastling(xCoord, yCoord, posMoves, attack);
     }
     //from: coordinate of King
     //to: coordinate of Rook
     private void addCastling(int xCoord, int yCoord, List<int[]> posMoves, boolean attack) {
-	Piece p = board[xCoord][yCoord];
-	
-	if (attack || !(p instanceof King) || p.isMoved())
-	    return;
+        Piece p = board[xCoord][yCoord];
+        
+        if (attack || !(p instanceof King) || p.isMoved())
+            return;
 
         addCastling(xCoord, yCoord, posMoves, p, 2);
         addCastling(xCoord, yCoord, posMoves, p, 6);
     }
     //with the end spot for the king, add the castling if possible
     private void addCastling(int xCoord, int yCoord, List<int[]> posMoves, Piece p, int kingEnd) {
-	//all spots from king to end spot are empty (exclude king)
+        //all spots from king to end spot are empty (exclude king)
         if (!isEmptyBetween(kingEnd, yCoord, xCoord))
             return;
 
-	//get rook
+        //get rook
         int xRook = -1;
         int dx = 1;
         if (kingEnd < xCoord) {
@@ -638,11 +629,11 @@ public class Chess {
         if (xRook == -1) //not found
             return;
         
-	Piece rook = board[xRook][yCoord];
-	if (rook.isMoved())
-	    return;
+        Piece rook = board[xRook][yCoord];
+        if (rook.isMoved())
+            return;
         
-	//all spots from rook to end spot are empty (exclude rook)
+        //all spots from rook to end spot are empty (exclude rook)
         if (!isEmptyBetween(kingEnd, yCoord, xRook))
             return;
 
@@ -658,30 +649,28 @@ public class Chess {
             xEnd = temp + 1;
         }
         for (int atX = xStart; atX < xEnd; atX++) {
-	    Piece at = board[atX][yCoord];
-	    if (at != null)
-		return false;
-	}
+            Piece at = board[atX][yCoord];
+            if (at != null)
+                return false;
+        }
 
         return true;
     }
 
-    //add a move to movesDone
-    public void updateMovesDone(int[] from, int[] to){
-	int[][] move = {from, to};
-	movesDone.add(move);
+    //~~~~~lastMove, history, piecesTaken
+    public void updateLastMove(int[] from, int[] to){
+        int[][] move = {from, to};
+        lastMove = move;
     }
     public void addHistory(int[] from, int[] to) {
         history += historyString(from, to);
     }
     public String historyString(int[] from, int[] to) {
-        String s;
-        
         Piece p = board[from[0]][from[1]];
         Piece pTo = board[to[0]][to[1]];
 
         //not pawn, then put capital letter
-        s = restrictiveName(p);
+        String s = restrictiveName(p);
         s += Utils.coordToString(from);
 
         //if movement, then put "-" otherwise "x" and letter
@@ -712,27 +701,28 @@ public class Chess {
         else
             whitePiecesTaken.add(p);
     }
-    
+
+    //~~~~~Comamnds
     //assume valid command
     //return if continue playing
     public boolean doCommand(String command) {
-        command = command.toLowerCase();
-        switch(command) {
-        case "history": System.out.println(history); break;
-        case "pieces": Utils.printPieces(blackPiecesTaken, whitePiecesTaken); break;
+        switch (command.toLowerCase()) {
+        case "history": case "record": case "r": System.out.println(history); break;
+        case "pieces": case "p": Utils.printPieces(blackPiecesTaken, whitePiecesTaken); break;
             
         case "resign": return !Utils.confirmResign();
         case "draw": return !Utils.confirmDraw();
             
         case "help" : case "h": case "?": Utils.printHelp(); break;
         case "instructions": case "i": Utils.printInstructions(); break;
-        case "quit": case "q": case "exit": case "e":
-            System.out.println("Exiting...");
-            return false;
+            
+        case "quit": case "q": case "exit": case "e": return !Utils.confirmQuit();
         }
+        
         return true;
     }
 
+    //~~~~~Print Board
     public void printBoard() {
         Utils.printBoard(board, 3, 5);
     }

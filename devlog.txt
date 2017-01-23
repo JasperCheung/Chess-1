@@ -36,9 +36,11 @@ COOL STUFF LEARNED
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The continue key word in  a loop starts again at the conditional of the loop without running the rest of the code following continue.
-The switch statement checks a variable's equality against a list of values and executes one statement out of a list of conditionals in our program.
+The switch statement checks a variable's equality against a list of values and executes one statement out of a list of conditionals in
+our program.
 \ is an escape character so you can't output it as a string alone, use \\ to get those slashes in ASCII text art. 
-List is the interface that Arraylist implements, used as variable name when we instantiated ArrayLists in case we had uses for other lists or methods. 
+List is the interface that Arraylist implements, used as variable name when we instantiated ArrayLists in case we had uses for other
+lists or methods. 
 There were characters that could clear screens or input white boxes in the terminal. Choose not to use them. 
 Class Arrays has methods to print contents of arrays and other methods used to test for our board and arrays of possible moves. 
  
@@ -48,13 +50,17 @@ MID-DEVELOPMENT DESIGN CHANGES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 We added new classes (Movement, Utils) we did not originally plan for.
 Movement was a class instantiated in all the pieces to determine how they move/attack, also used to determine if moves were legal.
-Utils was a class that was used as a general class containing helper methods because we felt that our classes were getting cluttered. Ex. The aesthetics of the board, checking if the commands were valid, changing user inputs to be used in code. 
+Utils was a class that was used as a general class containing helper methods because we felt that our classes were getting cluttered.
+Ex. The aesthetics of the board, checking if the commands were valid, changing user inputs to be used in code. 
 
-We decided to use official Chess notation instead of just number coordinates because we felt that it would be better for user experience.
+We decided to use official Chess notation instead of just number coordinates because we felt that it would be better for user
+experience.
 
-Board changed from a barebones that only had letters on the terminal to our current one because it was clearer to see the state of the board and the spaces on the board. 
+Board changed from a barebones that only had letters on the terminal to our current one because it was clearer to see the state of the
+board and the spaces on the board. 
 
-We implemented stalemate but did not implement the other draws, threefold repetition, fifty-move rule, and impossibility of checkmate. Because those required us to keep all states of the board and then compare them.
+We implemented stalemate but did not implement the other draws, threefold repetition, fifty-move rule, and impossibility of checkmate.
+Because those required us to keep all states of the board and then compare them.
 
 
 

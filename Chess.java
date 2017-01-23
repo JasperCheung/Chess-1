@@ -7,8 +7,8 @@ public class Chess {
     //(white left rook is (0, 0))
     private Piece[][] board;
 
-    //history of moves
-    private List<int[][]> movesDone;
+    //last move: from and to
+    private int[][] lastMove;
     //in reversible algebraic notation (for simplicity)
     private String history;
     
@@ -22,7 +22,7 @@ public class Chess {
 	board = new Piece[8][8];
 	populateBoard();
 
-        movesDone = new ArrayList<int[][]>();
+        lastMove = new int[2][2];
         history = "";
         
         blackPiecesTaken = new ArrayList<Piece>();
@@ -33,9 +33,6 @@ public class Chess {
     
     public Piece[][] getBoard(){
 	return board;
-    }
-    public List<int[][]> getMovesDone() {
-        return movesDone;
     }
     
     //Loops through the board/ [][] and populates
@@ -182,7 +179,7 @@ public class Chess {
             return false;
         }
         
-        updateMovesDone(from, to);
+        updateLastMove(from, to);
         p.moved();
         return true;
     }
@@ -586,8 +583,7 @@ public class Chess {
 
             //en passant
             if (attack && p.isMoved()) {
-                //check movesDone (pawn to left or right && did double-move)
-                int[][] lastMove = movesDone.get(movesDone.size() - 1);
+                //check lastMove (pawn to left or right && did double-move)
                 int[] lastFrom = lastMove[0];
                 int[] lastTo = lastMove[1];
                 Piece atLastTo = board[lastTo[0]][lastTo[1]];
@@ -673,10 +669,9 @@ public class Chess {
         return true;
     }
 
-    //add a move to movesDone
-    public void updateMovesDone(int[] from, int[] to){
+    public void updateLastMove(int[] from, int[] to){
 	int[][] move = {from, to};
-	movesDone.add(move);
+        lastMove = move;
     }
     public void addHistory(int[] from, int[] to) {
         history += historyString(from, to);

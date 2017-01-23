@@ -229,14 +229,14 @@ public class Chess {
 	board[from[0]][from[1]] = null;
     }
     public boolean isSpecialMove(int[] from, int[] to) {
-        List<int[]> specialMoves = new ArrayList<int[]>();
-
         Piece p = board[from[0]][from[1]];
         //pawn promotion
         if (p instanceof Pawn && p.isMoved() && isPosMove(from, to)) {
             if (to[1] == 7 || to[1] == 0)
                 return true;
         }
+
+        List<int[]> specialMoves = new ArrayList<int[]>();
         
         int xCoord = from[0];
         int yCoord = from[1];
@@ -250,11 +250,8 @@ public class Chess {
         Piece p = board[from[0]][from[1]];
         
         if (p instanceof Pawn) {
-            if (!p.isMoved()) {
-                //pawn 2-square movement
-                return isLegalMove(from, to);
-            } else if (to[1] == 7 || to[1] == 0){
-                //pawn promotion
+            //pawn 2-square movement and pawn promotion, check if legal
+            if (!p.isMoved() || to[1] == 7 || to[1] == 0) {
                 return isLegalMove(from, to);
             } else {
                 //en passant
@@ -309,7 +306,6 @@ public class Chess {
             if (!p.isMoved()) {
                 //pawn 2-square movement
                 addHistory(from, to);
-                move(from, to);
             } else if (to[1] == 7 || to[1] == 0){
                 //keep temporary string for history (before promotion)
                 String temp = historyString(from, to);
@@ -317,13 +313,12 @@ public class Chess {
                 //pawn promotion
                 if (!promotePawn(from))
                     return false;
-
                 Piece promoted = board[from[0]][from[1]];
                 
                 //for pawn promotion, put = and the new symbol after
                 history += temp + "=" + promoted.toString().toUpperCase();
-                
-                move(from, to);
+
+                checkAddPiecesTaken(to);
             } else {
                 //en passant
                 //also kill piece
@@ -336,16 +331,17 @@ public class Chess {
                 int[] killed = {to[0], to[1] + dy};
                 checkAddPiecesTaken(killed);
                 board[to[0]][to[1] + dy] = null;
-                
-                move(from, to);
             }
+            move(from, to);
         }
         
         //castling (to is coordinate of rook)
         if (p instanceof King) {
             int kingEnd = 6;
-            if (to[0] < from[0]) {//move left
+            int dx = -1;
+            if (to[0] < from[0]) {  //king moves left
                 kingEnd = 2;
+                dx = 1;
                 history += "O-O-O";
             } else {
                 history += "O-O";
@@ -356,9 +352,6 @@ public class Chess {
             move(from, end);
 
             //get rook end position
-            int dx = -1;
-            if (to[0] < from[0])
-                dx = 1;
             int[] toRook = {kingEnd + dx, from[1]};
             
             //move rook
@@ -459,9 +452,12 @@ public class Chess {
         
         //go through all possible moves and add if they are legal
         for (int[] to : posMoves) {
-            if ((isSpecialMove(from, to) && isLegalSpecialMove(from, to)) || isLegalMove(from, to)) {
-                legalMoves.add(to);
+            if (isSpecialMove(from, to)) {
+                if (isLegalSpecialMove(from, to))
+                    legalMoves.add(to);
             }
+            else if (isLegalMove(from, to))
+                legalMoves.add(to);
         }
 
         return legalMoves;
@@ -564,9 +560,9 @@ public class Chess {
         if (p instanceof Pawn) {
             //pawn 2-square movement
             if (!attack && !p.isMoved()) {
-                int dy = 1;
-                if (!p.isWhite())
-                    dy = -1;
+                int dy = -1;
+                if (p.isWhite())
+                    dy = 1;
                 
                 //no piece 1 square ahead
                 Piece at = board[xCoord][yCoord + dy];
@@ -587,16 +583,11 @@ public class Chess {
                 if (!(atLastTo instanceof Pawn) || lastTo[1] != yCoord || Math.abs(lastFrom[1] - lastTo[1]) != 2 || Math.abs(lastTo[0] - xCoord) != 1)
                     return;
 
-                //left or right
-                int dx = 1;
-                if (lastTo[0] < xCoord)
-                    dx = -1;
-
                 int dy = -1;
                 if (p.isWhite())
                     dy = 1;
                 
-                int[] to = {xCoord + dx, yCoord + dy};
+                int[] to = {lastTo[0], yCoord + dy};
                 posMoves.add(to);
             }
         }
@@ -675,13 +666,11 @@ public class Chess {
         history += historyString(from, to);
     }
     public String historyString(int[] from, int[] to) {
-        String s;
-        
         Piece p = board[from[0]][from[1]];
         Piece pTo = board[to[0]][to[1]];
 
         //not pawn, then put capital letter
-        s = restrictiveName(p);
+        String s = restrictiveName(p);
         s += Utils.coordToString(from);
 
         //if movement, then put "-" otherwise "x" and letter

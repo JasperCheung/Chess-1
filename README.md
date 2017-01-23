@@ -4,7 +4,7 @@ APCS1 pd 5
 Fabiha Ahmed, Kenny Chen, Jasper Cheung
 
 ## Description 
-It is the popular board game known as Chess playable in the terminal. It will be a 2-player game (no AI).
+The popular board game known as Chess is now playable in the terminal. It is a 2-player game (no AI).
 
 ## Launch Instructions
 1. Simply pull all the files 

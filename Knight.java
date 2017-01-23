@@ -1,6 +1,6 @@
 public class Knight extends Piece {
     public Knight(boolean init) {
-	super(init);
+        super(init);
         name = "n";
     }
 

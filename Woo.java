@@ -3,30 +3,30 @@
 import cs1.Keyboard;
 public class Woo {
     public static void main(String[] args) {
-	//Start
+        //Start
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-	System.out.println("       _____   _                        ");
-	System.out.println("      / ____| | |                       ");
-	System.out.println("     | |      | |__     ___   ___   ___ ");
-	System.out.println("     | |      | '_ \\   / _ \\ / __| / __|");
-	System.out.println("     | |____  | | | | |  __/ \\__ \\ \\__ \\ ");
-	System.out.println("      \\_____| |_| |_|  \\___| |___/ |___/");
-	System.out.println("\n\nAPCS1 Pd5");
-	System.out.println("By Fabiha Ahmed, Kenny Chen, Jasper Cheung");
-	System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("       _____   _                        ");
+        System.out.println("      / ____| | |                       ");
+        System.out.println("     | |      | |__     ___   ___   ___ ");
+        System.out.println("     | |      | '_ \\   / _ \\ / __| / __|");
+        System.out.println("     | |____  | | | | |  __/ \\__ \\ \\__ \\ ");
+        System.out.println("      \\_____| |_| |_|  \\___| |___/ |___/");
+        System.out.println("\n\nAPCS1 Pd5");
+        System.out.println("By Fabiha Ahmed, Kenny Chen, Jasper Cheung");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         
         Utils.printInstructions();
         
         System.out.println("Type anything to begin:");
         Keyboard.readString();
-	System.out.print("\n");
-	Chess c = new Chess();
-	c.play();
+        System.out.print("\n");
+        Chess c = new Chess();
+        c.play();
         
         
         /* testing toString
-	Queen q = new Queen(true);
-	System.out.println(q);
+        Queen q = new Queen(true);
+        System.out.println(q);
         */
         /* testing Movement in pieces
         King k = new King(true);
@@ -51,10 +51,10 @@ public class Woo {
         System.out.println(Arrays.deepToString(p.getAttacks().getOtherMov()));
         */
         /* testing doMove
-	int[] from = {1, 1};
-	int[] to = {1, 2};
-	c.doMove(from, to);
-	c.printBoard();
+        int[] from = {1, 1};
+        int[] to = {1, 2};
+        c.doMove(from, to);
+        c.printBoard();
 
         int[] from2 = {0, 0};
         int[] to2 = {0, 2};
@@ -62,19 +62,19 @@ public class Woo {
         c.printBoard();
         */
         /* testing posMoves()
-	int[] from = {3, 0};
-	int[] to = {3, 3};
-	c.doMove(from, to);
-	c.printBoard();
+        int[] from = {3, 0};
+        int[] to = {3, 3};
+        c.doMove(from, to);
+        c.printBoard();
 
-	System.out.println(Arrays.deepToString(c.posMoves(to[0], to[1], false).toArray()));
+        System.out.println(Arrays.deepToString(c.posMoves(to[0], to[1], false).toArray()));
 
         int[] from2 = {2, 1};
         int[] to2 = {2, 5};
         c.doMove(from2, to2);
         c.printBoard();
         
-	System.out.println(Arrays.deepToString(c.posMoves(to2[0], to2[1], true).toArray()));
+        System.out.println(Arrays.deepToString(c.posMoves(to2[0], to2[1], true).toArray()));
 
         System.out.println(Arrays.deepToString(c.posMoves(1, 1, false).toArray()));
         System.out.println(Arrays.deepToString(c.posMoves(1, 1, true).toArray()));
@@ -94,17 +94,17 @@ public class Woo {
         //testing noLegalMove()
         System.out.println(c.noLegalMoves(false));
         */
-	/* testing islegalMove()
-	int[] from = {3, 1};
-	int[] to = {3, 5};
-	c.doMove(from, to);
-	c.printBoard();
+        /* testing islegalMove()
+        int[] from = {3, 1};
+        int[] to = {3, 5};
+        c.doMove(from, to);
+        c.printBoard();
 
         int[] from2 = {3, 5};
         int[] to2 = {4, 6};
-	System.out.println(c.isLegalMove(from2, to2));
-	c.printBoard();
-	*/
+        System.out.println(c.isLegalMove(from2, to2));
+        c.printBoard();
+        */
         /* testing noLegalMoves()
         //simulate almost fool's mate
         int[] from = {3, 7};
@@ -122,27 +122,27 @@ public class Woo {
         c.printBoard();
         System.out.println(c.noLegalMoves(true));
         */
-	/* test turn()
+        /* test turn()
         c.turn(true);
         c.printBoard();
         */
         /* testing addCastling
         System.out.println(Arrays.deepToString(c.posMoves(4, 0).toArray()));
         
-	int[] from = new int[2];
-	int[] to = new int[2];
-	for (int i = 1; i < 7; i++) {
+        int[] from = new int[2];
+        int[] to = new int[2];
+        for (int i = 1; i < 7; i++) {
             if (i == 4)
                 continue;
-	    from[0] = i; from[1] = 0;
-	    to[0] = i; to[1] = 1;
-	    c.doMove(from, to);
-	}
-	c.printBoard();
+            from[0] = i; from[1] = 0;
+            to[0] = i; to[1] = 1;
+            c.doMove(from, to);
+        }
+        c.printBoard();
 
-	System.out.println(Arrays.deepToString(c.posMoves(4, 0).toArray()));
+        System.out.println(Arrays.deepToString(c.posMoves(4, 0).toArray()));
 
-	System.out.println(Arrays.deepToString(c.legalMoves(4, 0).toArray()));
+        System.out.println(Arrays.deepToString(c.legalMoves(4, 0).toArray()));
         
         //testing isSpecialMove
         int[] from2 = {4, 0};
@@ -153,14 +153,14 @@ public class Woo {
         //testing doSpecialMove
         c.doSpecialMove(from2, to2);
         c.printBoard();
-	*/
+        */
         /* testing pawn promotion
         int[] from = {0, 1};
         int[] to = {0, 5};
         c.doMove(from, to);
         c.printBoard();
         
-	System.out.println(Arrays.deepToString(c.posMoves(0, 6).toArray()));
+        System.out.println(Arrays.deepToString(c.posMoves(0, 6).toArray()));
         System.out.println(Arrays.deepToString(c.legalMoves(0, 6).toArray()));
         c.printBoard();
 

@@ -1,6 +1,6 @@
 public class Queen extends Piece {
     public Queen(boolean init) {
-	super(init);
+        super(init);
         name = "q";
     }
 

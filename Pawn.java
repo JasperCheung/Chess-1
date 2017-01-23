@@ -1,6 +1,6 @@
 public class Pawn extends Piece {
     public Pawn(boolean init) {
-	super(init);
+        super(init);
         name = "p";
         createAttacks();
     }

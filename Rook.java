@@ -1,6 +1,6 @@
 public class Rook extends Piece {
     public Rook(boolean init) {
-	super(init);
+        super(init);
         name = "r";
     }
 

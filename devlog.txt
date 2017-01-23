@@ -155,7 +155,8 @@ Kenny :: implemented pawn promotion and en passant and stalemate
 Fabiha :: added history
 Jasper :: Start screen, commands, comments
 
-2017-1-??
+2017-1-22
 --------------------------------------------------------------
+Jasper :: Flowchart, Zone of reflection in the devlog, format, bug testing
 
 ==============================================================

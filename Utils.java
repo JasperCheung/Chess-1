@@ -6,7 +6,8 @@ public class Utils {
     private static final String numbers = "12345678";
 
     private static final String[] commands = { "history", "pieces", "resign", "draw", "help", "h", "?", "instructions", "i", "quit", "q", "exit", "e" };
-    
+
+    //~~~~~Coordinates
     //return true if valid coordinate
     public static boolean validCoordinate(String coord) {
         if (coord.length() != 2)
@@ -46,6 +47,14 @@ public class Utils {
         return Arrays.asList(commands).contains(command.toLowerCase());
     }
 
+    //~~~color to string
+    public static String colorToString(String color) {
+        if (color)
+            return "White";
+        else
+            return "Black";
+    }
+    //~~~~~~Commands
     public static void printPieces(List<Piece> blackPiecesTaken, List<Piece> whitePiecesTaken) {
         String s = "Black pieces taken: ";
         for (Piece p : blackPiecesTaken)
@@ -105,7 +114,8 @@ public class Utils {
 	System.out.println(instructions);
 	
     }
-    
+
+    //~~~~~contains and equals
     //checks if list contains el (same values) (array doesn't override .equals)
     //(maybe define Point...)
     public static boolean contains(List<int[]> list, int[] el) {
@@ -126,9 +136,9 @@ public class Utils {
         }
         return true;
     }
-    
+
+    //~~~~~printBoard
     //prints board
-        
     public static void printBoard(Piece[][] board, int length, int width) {
 	String clr = " ";//white or black square
 	String label = "abcdefgh";
@@ -196,7 +206,4 @@ public class Utils {
         
         System.out.println();
     }
-        
-    
-
 }

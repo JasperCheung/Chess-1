@@ -9,15 +9,18 @@ public class Chess {
 
     //last move: from and to
     private int[][] lastMove;
+    
     //in reversible algebraic notation (for simplicity)
     private String history;
     
     //pieces taken
     private List<Piece> blackPiecesTaken;
     private List<Piece> whitePiecesTaken;
-    
+
+    //keep track if continue playing
     private boolean continuePlaying;
-    
+
+    //~~~~~Constructor
     public Chess() {
 	board = new Piece[8][8];
 	populateBoard();
@@ -30,11 +33,8 @@ public class Chess {
         
         continuePlaying = true;
     }
-    
-    public Piece[][] getBoard(){
-	return board;
-    }
-    
+
+    //~~~~~Initialization
     //Loops through the board/ [][] and populates
     private void populateBoard() {
 	for (int x = 0; x < 8; x++) {
@@ -72,7 +72,8 @@ public class Chess {
         
         board[x][y] = p;
     }
-    
+
+    //~~~~~Play
     public void play() {
         //keep changing players until checkmated/draw/resign
         //also announce when player is checked (and checkmated)
@@ -84,12 +85,7 @@ public class Chess {
                 counter++;
             }
             
-            String s;
-            if (color)
-                s = "White";
-            else
-                s = "Black";
-            System.out.println(s + "'s turn:");
+            System.out.println(Utils.colorToString(color) + "'s turn:");
             turn(color);
             System.out.println();
 
@@ -115,6 +111,7 @@ public class Chess {
 
         System.out.println(history);
     }
+    //~~~~~Turn
     //complete a turn for a player
     public void turn(boolean color) {
         for (;;) {
@@ -183,6 +180,8 @@ public class Chess {
         p.moved();
         return true;
     }
+    
+    //~~~~~Is- and Do- possible, legal, special moves
     /*
       Possible moves vs Legal moves:
       Possible moves only get the movements and check the boundaries
@@ -401,7 +400,8 @@ public class Chess {
         
         return true;
     }
-    
+
+    //~~~~~inCheck
     public boolean inCheck(boolean color) {
         //get coordinate of king
         int[] kingCoord = new int[2];
@@ -432,7 +432,8 @@ public class Chess {
         
 	return false;
     }
-    
+
+    //~~~~~noLegalMoves
     //if checked and noLegalMoves -> checkmated
     //otherwise stalemate
     public boolean noLegalMoves(boolean color) {
@@ -450,7 +451,8 @@ public class Chess {
 
         return true;
     }
-    
+
+    //~~~~~Legal moves
     //returns all legal moves at coordinate
     public List<int[]> legalMoves(int xCoord, int yCoord) {
         List<int[]> posMoves = posMoves(xCoord, yCoord);
@@ -470,7 +472,8 @@ public class Chess {
 
         return legalMoves;
     }
-    
+
+    //~~~~~Possible moves and adding special moves
     //get all possible moves (attack and movement)
     public List<int[]> posMoves(int xCoord, int yCoord) {
         List<int[]> posMoves = posMoves(xCoord, yCoord, true);
@@ -669,6 +672,7 @@ public class Chess {
         return true;
     }
 
+    //~~~~~lastMove, history, piecesTaken
     public void updateLastMove(int[] from, int[] to){
 	int[][] move = {from, to};
         lastMove = move;
@@ -714,7 +718,8 @@ public class Chess {
         else
             whitePiecesTaken.add(p);
     }
-    
+
+    //~~~~~Comamnds
     //assume valid command
     //return if continue playing
     public boolean doCommand(String command) {
@@ -735,6 +740,7 @@ public class Chess {
         return true;
     }
 
+    //~~~~~Print Board
     public void printBoard() {
         Utils.printBoard(board, 3, 5);
     }

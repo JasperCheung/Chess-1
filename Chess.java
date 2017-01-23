@@ -161,21 +161,30 @@ public class Chess {
             int[] to = Utils.coordToInts(move);
             
             //does move if legal, otherwise repeat
-            if (isPosMove(from, to)) {
-                if ((isSpecialMove(from, to) && isLegalSpecialMove(from, to)) || isLegalMove(from, to)) {
-                    if (isSpecialMove(from, to)) {
-                        if (!doSpecialMove(from, to))  //failed doing move
-                            continue;
-                    } else {
-                        doMove(from, to, color);
-                    }
-                    updateMovesDone(from, to);
-                    p.moved();
-                    break;
-                }
-            }
+            if (turnMove(from, to, p, color))
+                break;
             System.out.println("Invalid move");
         }
+    }
+    //does the move for a turn; true if successful
+    private boolean turnMove(int[] from, int[] to, Piece p, boolean color) {
+        if (!isPosMove(from, to))
+            return false;
+        
+        if (isSpecialMove(from, to)) {
+            if (!isLegalSpecialMove(from, to))
+                return false;
+            if (!doSpecialMove(from, to))  //failed doing move
+                return false;
+        } else if (isLegalMove(from, to)) {
+            doMove(from, to, color);
+        } else {
+            return false;
+        }
+        
+        updateMovesDone(from, to);
+        p.moved();
+        return true;
     }
     /*
       Possible moves vs Legal moves:
@@ -223,7 +232,7 @@ public class Chess {
 	board[to[0]][to[1]] = board[from[0]][from[1]];
 	board[from[0]][from[1]] = null;
     }
-    //move, but with side effects (history and pieces taken)
+    //move, but with side effects for normal move (history and pieces taken)
     public void doMove(int[] from, int[] to, boolean color) {
         addHistory(from, to);
         checkAddPiecesTaken(to);
@@ -293,10 +302,8 @@ public class Chess {
             for (int atX = start; atX <= end; atX += 1) {
                 //do move, check, and undo
                 int[] toSpot = {atX, from[1]};
-                move(from, toSpot);
-                boolean check = inCheck(p.isWhite());
-                move(toSpot, from);
-                if (check)
+                boolean legal = simulateLegalMove(from, toSpot);
+                if (!legal)
                     return false;
             }
         }

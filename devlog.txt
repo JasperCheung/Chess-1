@@ -34,7 +34,7 @@ COOL STUFF LEARNED
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The continue key word in  a loop starts again at the conditional of the loop without running the rest of the code following continue.
-The switch statement checks a variable's equality against a list of values and executes one statement out of a list of conditionals.
+The switch statement checks a variable's equality against a list of values and executes one statement out of a list of conditionals in our program.
 \ is an escape character so you can't output it as a string alone, use \\ to get those slashes in ASCII text art. 
 List is the interface that Arraylist implements, used as variable name when we instantiated ArrayLists in case we had uses for other lists or methods. 
 There were characters that could clear screens or input white boxes in the terminal. Choose not to use them. 

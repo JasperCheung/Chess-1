@@ -19,8 +19,10 @@ Able to take different inputs for commands using switch command.
 Avoid cluttered classes using a Utils class containing helper methods.
 Input was taken using keyboard class from class.
 All possible moves were determined using the movement class
-To determine if moves were legal we had a series of methods. Checked if pieces were the same color as the user see if any pieces were in the way. After that, the moves were crossed referenced with all possible moves.
-There were special cases with 2 square pawn moves, castling, pawn promotion, and en passant. This was covered by a method that would add these moves into possible moves if conditions were met.
+To determine if moves were legal we had a series of methods. Checked if pieces were the same color as the user see if any pieces were 
+in the way. After that, the moves were crossed referenced with all possible moves.
+There were special cases with 2 square pawn moves, castling, pawn promotion, and en passant. This was covered by a method that would 
+add these moves into possible moves if conditions were met.
 Checkmate was determined if there is no legal moves and if the king is in check.
 Stalemate was determined if there is no legal moves and the king is not in check.
 ASCII text art!!! Chess!

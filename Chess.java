@@ -34,7 +34,7 @@ public class Chess {
         continuePlaying = true;
     }
 
-    //~~~~~Initialization
+    //~~~~~Initializing board
     //Loops through the board/ [][] and populates
     private void populateBoard() {
 	for (int x = 0; x < 8; x++) {

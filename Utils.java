@@ -48,7 +48,7 @@ public class Utils {
     }
 
     //~~~color to string
-    public static String colorToString(String color) {
+    public static String colorToString(boolean color) {
         if (color)
             return "White";
         else

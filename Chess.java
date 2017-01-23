@@ -119,11 +119,9 @@ public class Chess {
             System.out.print("Enter command or coordinate of piece:\t");
             String input = Keyboard.readString();
         
-            //check if valid coordinate
-            boolean validCoord = Utils.validCoordinate(input);
-            boolean validCommand = Utils.validCommand(input);
-            if (!validCoord) {
-                if (!validCommand) {
+            //check if valid coordinate or command
+            if (!Utils.validCoordinate(input)) {
+                if (!Utils.validCommand(input)) {
                     System.out.println("Unrecognized command or coordinate of piece");
                 } else {
                     if (!doCommand(input)) {
@@ -155,13 +153,13 @@ public class Chess {
             int[] to = Utils.coordToInts(move);
             
             //does move if legal, otherwise repeat
-            if (turnMove(from, to, p, color))
+            if (turnMove(from, to, p))
                 break;
             System.out.println("Invalid move");
         }
     }
     //does the move for a turn; true if successful
-    private boolean turnMove(int[] from, int[] to, Piece p, boolean color) {
+    private boolean turnMove(int[] from, int[] to, Piece pFrom) {
         if (!isPosMove(from, to))
             return false;
         
@@ -171,21 +169,24 @@ public class Chess {
             if (!doSpecialMove(from, to))  //failed doing move
                 return false;
         } else if (isLegalMove(from, to)) {
-            doMove(from, to, color);
+            addHistory(from, to);
+            checkAddPiecesTaken(to);
+            move(from, to);
         } else {
             return false;
         }
         
         updateLastMove(from, to);
-        p.moved();
+        pFrom.moved();
         return true;
     }
     
     //~~~~~Is- and Do- possible, legal, special moves
     /*
-      Possible moves vs Legal moves:
+      Possible moves vs Legal moves vs Special moves:
       Possible moves only get the movements and check the boundaries
       Legal moves are possible moves but have also checked that they don't leave the king in check
+      Special moves are exceptions to normal playing (ie. castling, en passant, and pawn promotion)
     */
     public boolean isPosMove(int[] from, int[] to) {
         return Utils.contains(posMoves(from[0], from[1]), to);
@@ -196,11 +197,10 @@ public class Chess {
       returns true if legal
     */
     public boolean isLegalMove(int[] from, int[] to) {
-	boolean attack = Utils.contains(posMoves(from[0], from[1], true), to);
-	
 	//do move (if attack, then keep track of attacked piece)
-	Piece killed = board[to[0]][to[1]];  //used only for attack
-
+	Piece killed = board[to[0]][to[1]];
+        boolean attack = killed != null;
+        
         boolean legal = simulateLegalMove(from, to);
         
 	if (attack)
@@ -227,12 +227,6 @@ public class Chess {
             return; //don't change anything
 	board[to[0]][to[1]] = board[from[0]][from[1]];
 	board[from[0]][from[1]] = null;
-    }
-    //move, but with side effects for normal move (history and pieces taken)
-    public void doMove(int[] from, int[] to, boolean color) {
-        addHistory(from, to);
-        checkAddPiecesTaken(to);
-        move(from, to);
     }
     public boolean isSpecialMove(int[] from, int[] to) {
         List<int[]> specialMoves = new ArrayList<int[]>();

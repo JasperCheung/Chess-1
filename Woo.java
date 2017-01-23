@@ -50,28 +50,28 @@ public class Woo {
         System.out.println(Arrays.deepToString(p.getMovements().getOtherMov()));
         System.out.println(Arrays.deepToString(p.getAttacks().getOtherMov()));
         */
-        /* testing doMove
+        /* testing move
         int[] from = {1, 1};
         int[] to = {1, 2};
-        c.doMove(from, to);
+        c.move(from, to);
         c.printBoard();
 
         int[] from2 = {0, 0};
         int[] to2 = {0, 2};
-        c.doMove(from2, to2);
+        c.move(from2, to2);
         c.printBoard();
         */
         /* testing posMoves()
         int[] from = {3, 0};
         int[] to = {3, 3};
-        c.doMove(from, to);
+        c.move(from, to);
         c.printBoard();
 
         System.out.println(Arrays.deepToString(c.posMoves(to[0], to[1], false).toArray()));
 
         int[] from2 = {2, 1};
         int[] to2 = {2, 5};
-        c.doMove(from2, to2);
+        c.move(from2, to2);
         c.printBoard();
         
         System.out.println(Arrays.deepToString(c.posMoves(to2[0], to2[1], true).toArray()));
@@ -82,7 +82,7 @@ public class Woo {
         /* testing inCheck()
         int[] from = {3, 1};
         int[] to = {3, 6};
-        c.doMove(from, to);
+        c.move(from, to);
         c.printBoard();
 
         System.out.println(Arrays.deepToString(c.posMoves(3, 6, true).toArray()));
@@ -97,7 +97,7 @@ public class Woo {
         /* testing islegalMove()
         int[] from = {3, 1};
         int[] to = {3, 5};
-        c.doMove(from, to);
+        c.move(from, to);
         c.printBoard();
 
         int[] from2 = {3, 5};
@@ -109,15 +109,15 @@ public class Woo {
         //simulate almost fool's mate
         int[] from = {3, 7};
         int[] to = {7, 3};
-        c.doMove(from, to);
+        c.move(from, to);
 
         int[] from2 = {5, 1};
         int[] to2 = {5, 3};
-        c.doMove(from2, to2);
+        c.move(from2, to2);
 
         int[] from3 = {6, 1};
         int[] to3 = {6, 3};
-        c.doMove(from3, to3);
+        c.move(from3, to3);
         
         c.printBoard();
         System.out.println(c.noLegalMoves(true));
@@ -136,7 +136,7 @@ public class Woo {
                 continue;
             from[0] = i; from[1] = 0;
             to[0] = i; to[1] = 1;
-            c.doMove(from, to);
+            c.move(from, to);
         }
         c.printBoard();
 
@@ -157,7 +157,7 @@ public class Woo {
         /* testing pawn promotion
         int[] from = {0, 1};
         int[] to = {0, 5};
-        c.doMove(from, to);
+        c.move(from, to);
         c.printBoard();
         
         System.out.println(Arrays.deepToString(c.posMoves(0, 6).toArray()));
@@ -176,7 +176,7 @@ public class Woo {
         c.turn(true);
         c.printBoard();
         */
-        /* test history and en passant
+        /* test en passant
         int count = 0;
         for (boolean color = true; count < 4; color = !color) {
             c.printBoard();
@@ -184,7 +184,6 @@ public class Woo {
             count++;
         }
         c.printBoard();
-        System.out.println(Arrays.deepToString(c.getHistory().toArray()));
         System.out.println(Arrays.deepToString(c.legalMoves(3, 4).toArray()));
         
         c.turn(true);

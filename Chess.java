@@ -564,12 +564,16 @@ public class Chess {
                 if (p.isWhite())
                     dy = 1;
                 
-                //no piece 1 square ahead
-                Piece at = board[xCoord][yCoord + dy];
-                if (at != null)
+                //no piece 1 and 2 squares ahead
+                Piece at1 = board[xCoord][yCoord + dy];
+                if (at1 != null)
                     return;
                 
                 dy *= 2;
+                Piece at2 = board[xCoord][yCoord + dy];
+                if (at2 != null)
+                    return;
+                
                 int[] to = {xCoord, yCoord + dy};
                 posMoves.add(to);
             }

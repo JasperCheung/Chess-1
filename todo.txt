@@ -1,6 +1,6 @@
 Chess - Fabiha Ahmed, Kenny Chen, Jasper Cheung
 APCS1 pd 5
-2017-01-21
+2017-01-22
 
 Chess TODO list
 
@@ -35,23 +35,26 @@ Version 3: working chess
 2. Check if draw (stalemate, threefold repetition, fifty-move rule, impossibility of checkmate)
    a. stalemate
    -------------------------------
-   On hold(?)
+   On hold
    
    b. threefold repetition
    c. fifty-move rule
    d. impossibility of checkmate
+   -------------------------------
 
--------------------------------
-Next
 
 Version 4: commands
 1. Implement commands
-   a. moveHistory (history)
-   b. takenPieces (pieces)
+   a. history (record, r)
+   b. pieces (p)
    c. resign
    d. draw
    e. help (h, ?)
-   f. quit (q, exit, e)
+   f. instructions (i)
+   g. quit (q, exit, e)
+
+-------------------------------
+End
 
 Version 5: variants
 1. Variants(Progressive chess, Chess960, Atomic chess, etc.)

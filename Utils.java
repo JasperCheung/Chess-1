@@ -5,7 +5,7 @@ public class Utils {
     private static final String letters = "abcdefgh";
     private static final String numbers = "12345678";
 
-    private static final String[] commands = { "history", "pieces", "resign", "draw", "help", "h", "?", "instructions", "i", "quit", "q", "exit", "e" };
+    private static final String[] commands = { "history", "record", "r", "pieces", "p", "resign", "draw", "help", "h", "?", "instructions", "i", "quit", "q", "exit", "e" };
 
     //~~~~~Coordinates
     //return true if valid coordinate
@@ -65,7 +65,7 @@ public class Utils {
         System.out.println(s);
     }
     
-    //return true if resign or draw
+    //return true if resign, draw, or quit
     public static boolean confirmResign() {
         System.out.println("Resign? (y/n)");
         boolean res = queryYesNo();
@@ -80,6 +80,13 @@ public class Utils {
             System.out.println("Draw!");
         return res;
     }
+    public static boolean confirmQuit() {
+        System.out.println("Confirm quit? (y/n)");
+        boolean res = queryYesNo();
+        if (res)
+            System.out.println("Quitting...");
+        return res;
+    }
     public static boolean queryYesNo() {
         String res = Keyboard.readString();
         res = res.toLowerCase();
@@ -92,13 +99,13 @@ public class Utils {
     
     public static void printHelp() {
         String s = "help, h, ?: Shows all commands\n";
-	s += "history: Shows all moves done\n";
-	s += "pieces: Shows all pieces taken\n";
+	s += "history, record, r: Shows all moves done\n";
+	s += "pieces, p: Shows all pieces taken\n";
 	s += "resign: Forfeit the game, opponent wins\n";
 	s += "draw: Offer a draw between the players\n";
 	s += "instructions, i: How to play the game\n";
 	s += "quit, q, exit, e: Leaves the game\n";
-      System.out.println(s);
+        System.out.println(s);
     }
 
     public static void printInstructions() {

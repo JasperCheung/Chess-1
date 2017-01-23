@@ -382,7 +382,7 @@ public class Chess {
         boolean color = pawn.isWhite();
         Piece promoted;
         
-        switch(name) {
+        switch (name) {
         case "q": promoted = new Queen(color); break;
         case "r": promoted = new Rook(color); break;
         case "b": promoted = new Bishop(color); break;
@@ -717,20 +717,19 @@ public class Chess {
     //assume valid command
     //return if continue playing
     public boolean doCommand(String command) {
-        command = command.toLowerCase();
-        switch(command) {
-        case "history": System.out.println(history); break;
-        case "pieces": Utils.printPieces(blackPiecesTaken, whitePiecesTaken); break;
+        switch (command.toLowerCase()) {
+        case "history": case "record": case "r": System.out.println(history); break;
+        case "pieces": case "p": Utils.printPieces(blackPiecesTaken, whitePiecesTaken); break;
             
         case "resign": return !Utils.confirmResign();
         case "draw": return !Utils.confirmDraw();
             
         case "help" : case "h": case "?": Utils.printHelp(); break;
         case "instructions": case "i": Utils.printInstructions(); break;
-        case "quit": case "q": case "exit": case "e":
-            System.out.println("Exiting...");
-            return false;
+            
+        case "quit": case "q": case "exit": case "e": return !Utils.confirmQuit();
         }
+        
         return true;
     }
 

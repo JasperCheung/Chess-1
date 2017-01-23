@@ -59,10 +59,10 @@ We implemented stalemate but did not implement the other draws, threefold repeti
 LESSONS LEARNED
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Commit your changes regular when editing code incase someone changes
-git pull --rebase is nice af
+git pull --rebase is useful
 Save your code while editing regularly to make sure you don't lose anything
-Other people are reading your code, try to make code readable to everyone. (Comments!)
-The internet is spooky proceede with caution
+Other people are reading your code; try to make code readable to everyone. (Comments!)
+The internet is spooky proceed with caution
 Communication is key, avoid arguments and (merge) conflicts but do question and encourage conversation.
 Doublecheck your work, spell check!
 Bugtesting is important!

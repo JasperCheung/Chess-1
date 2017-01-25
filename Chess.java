@@ -11,7 +11,10 @@ public class Chess {
     private int[][] lastMove;
     
     //in reversible algebraic notation (for simplicity)
-    private String history;
+    //store as arraylist of Strings (move in String form)
+    private List<String> history;
+    //temporary history for one move
+    private String oneHistory;
     
     //pieces taken
     private List<Piece> blackPiecesTaken;
@@ -19,14 +22,19 @@ public class Chess {
 
     //keep track if continue playing
     private boolean continuePlaying;
-
+    
+    //true is white, false is black
+    private boolean winner;
+    //true if draw, false if not draw
+    private boolean draw;
+    
     //~~~~~Constructor
     public Chess() {
         board = new Piece[8][8];
         populateBoard();
 
         lastMove = new int[2][2];
-        history = "";
+        history = new ArrayList<String>();
         
         blackPiecesTaken = new ArrayList<Piece>();
         whitePiecesTaken = new ArrayList<Piece>();
@@ -78,13 +86,7 @@ public class Chess {
         //keep changing players until checkmated/draw/resign
         //also announce when player is checked (and checkmated)
         printBoard();
-        int counter = 1;
         for (boolean color = true; continuePlaying; color = !color) {
-            if (color) {
-                history += "\n" + counter + ". ";
-                counter++;
-            }
-            
             System.out.println(Utils.colorToString(color) + "'s turn:");
             turn(color);
             System.out.println();
@@ -93,23 +95,26 @@ public class Chess {
             
             boolean check = inCheck(!color);
             boolean noLegalMoves = noLegalMoves(!color);
-            if (check) {
-                System.out.println("In check!");
-                if (!noLegalMoves)
-                    history += "+";
-            }
             if (noLegalMoves) {
-                if (check)
-                    System.out.println("Checkmated!");
-                else
+                if (check) {
+                    System.out.println("Checkmated!\n" + Utils.colorToString(color) + " wins!");
+                    oneHistory += "#";
+                    winner = color;
+                    draw = false;
+                } else {
                     System.out.println("Stalemated!");
+                    draw = true;
+                }
                 continuePlaying = false;
+            } else if (check) {
+                System.out.println("In check!");
+                oneHistory += "+";
             }
 
-            history += " ";
+            updateHistory();
         }
 
-        System.out.println(history);
+        printHistory(history);
     }
     //~~~~~Turn
     //complete a turn for a player
@@ -169,7 +174,7 @@ public class Chess {
             if (!doSpecialMove(from, to))  //failed doing move
                 return false;
         } else if (isLegalMove(from, to)) {
-            addHistory(from, to);
+            setOneHistory(from, to);
             checkAddPiecesTaken(to);
             move(from, to);
         } else {
@@ -305,9 +310,9 @@ public class Chess {
         if (p instanceof Pawn) {
             if (!p.isMoved()) {
                 //pawn 2-square movement
-                addHistory(from, to);
+                setOneHistory(from, to);
             } else if (to[1] == 7 || to[1] == 0){
-                //keep temporary string for history (before promotion)
+                //keep temporary string for oneHistory (before promotion)
                 String temp = historyString(from, to);
                 
                 //pawn promotion
@@ -316,13 +321,13 @@ public class Chess {
                 Piece promoted = board[from[0]][from[1]];
                 
                 //for pawn promotion, put = and the new symbol after
-                history += temp + "=" + promoted.toString().toUpperCase();
+                oneHistory = temp + "=" + promoted.toString().toUpperCase();
 
                 checkAddPiecesTaken(to);
             } else {
                 //en passant
                 //also kill piece
-                history += Utils.coordToString(from) + "x" + Utils.coordToString(to);
+                oneHistory = Utils.coordToString(from) + "x" + Utils.coordToString(to);
                 
                 int dy = 1;
                 if (p.isWhite())
@@ -342,9 +347,9 @@ public class Chess {
             if (to[0] < from[0]) {  //king moves left
                 kingEnd = 2;
                 dx = 1;
-                history += "O-O-O";
+                oneHistory = "O-O-O";
             } else {
-                history += "O-O";
+                oneHistory = "O-O";
             }
             int[] end = {kingEnd, from[1]};
             
@@ -666,8 +671,11 @@ public class Chess {
         int[][] move = {from, to};
         lastMove = move;
     }
-    public void addHistory(int[] from, int[] to) {
-        history += historyString(from, to);
+    public void updateHistory() {
+        history.add(oneHistory);
+    }
+    public void setOneHistory(int[] from, int[] to) {
+        oneHistory = historyString(from, to);
     }
     public String historyString(int[] from, int[] to) {
         Piece p = board[from[0]][from[1]];
@@ -695,6 +703,28 @@ public class Chess {
         return "";
     }
 
+    public void printHistory(List<String> history) {
+        String s = "";
+        
+        for (int i = 0; i < history.size(); i++) {
+            if (i % 2 == 0) //white
+                s += "\n" + (i / 2 + 1) + ". ";
+            s += history.get(i) + " ";
+        }
+
+        if (!continuePlaying) {
+            s += "\n\n";
+            if (draw)
+                s += "1/2 - 1/2";
+            else if (winner)
+                s += "1 - 0";
+            else
+                s += "0 - 1";
+        }
+        
+        System.out.println(s + "\n");
+    }
+    
     public void checkAddPiecesTaken(int[] coord) {
         Piece p = board[coord[0]][coord[1]];
         if (p == null)
@@ -706,12 +736,13 @@ public class Chess {
             whitePiecesTaken.add(p);
     }
 
+    
     //~~~~~Comamnds
     //assume valid command
     //return if continue playing
     public boolean doCommand(String command) {
         switch (command.toLowerCase()) {
-        case "history": case "record": case "r": System.out.println(history); break;
+        case "history": case "record": case "r": printHistory(history); break;
         case "pieces": case "p": Utils.printPieces(blackPiecesTaken, whitePiecesTaken); break;
             
         case "resign": return !Utils.confirmResign();

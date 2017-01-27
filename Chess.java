@@ -145,7 +145,7 @@ public class Chess {
                 continue;
             }
             System.out.print(p + " at " + input.substring(0, 1) + input.substring(1, 2));
-            
+
             //get input again for move
             System.out.print("\nEnter move:\t");
             String move = Keyboard.readString();
@@ -235,16 +235,7 @@ public class Chess {
         board[from[0]][from[1]] = null;
     }
     public boolean isSpecialMove(int[] from, int[] to) {
-        Piece p = board[from[0]][from[1]];
-        //pawn promotion
-        if (p instanceof Pawn && p.isMoved() && isNormalMove(from, to)) {
-            if (to[1] == 7 || to[1] == 0)
-                return true;
-        }
-
-        int xCoord = from[0];
-        int yCoord = from[1];
-        return Utils.contains(specialMoves(xCoord, yCoord), to);
+        return Utils.contains(specialMoves(from[0], from[1]), to);
     }
     //assume is valid special move
     //true if legal
@@ -582,6 +573,10 @@ public class Chess {
             if (!attack && !p.isMoved())
                 addPawnSquareMovement(xCoord, yCoord, specialMoves, p);
 
+            //pawn promotion
+            if (p.isMoved())
+                addPawnPromotion(xCoord, yCoord, specialMoves, attack);
+        
             //en passant
             if (attack && p.isMoved())
                 addEnPassant(xCoord, yCoord, specialMoves, p);
@@ -612,6 +607,10 @@ public class Chess {
         
         int[] to = {xCoord, yCoord + dy};
         specialMoves.add(to);
+    }
+    private void addPawnPromotion(int xCoord, int yCoord, List<int[]> specialMoves, boolean attack) {
+        if (yCoord == 6 || yCoord == 1)
+            specialMoves.addAll(normalMoves(xCoord, yCoord, attack));
     }
     private void addEnPassant(int xCoord, int yCoord, List<int[]> specialMoves, Piece p) {
         //check lastMove (pawn to left or right && did double-move)

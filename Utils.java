@@ -88,8 +88,7 @@ public class Utils {
         return res;
     }
     public static boolean queryYesNo() {
-        String res = Keyboard.readString();
-        res = res.toLowerCase();
+        String res = Keyboard.readString().toLowerCase();
         switch(res) {
         case "yes": case "y": return true;
         case "no": case "n": return false;

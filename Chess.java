@@ -129,7 +129,7 @@ public class Chess {
                 if (!Utils.validCommand(input)) {
                     System.out.println("Unrecognized command or coordinate of piece");
                 } else {
-                    if (!doCommand(input)) {
+                    if (!doCommand(input, color)) {
                         continuePlaying = false;
                         break;
                     }
@@ -754,13 +754,23 @@ public class Chess {
     //~~~~~Comamnds
     //assume valid command
     //return if continue playing
-    public boolean doCommand(String command) {
+    public boolean doCommand(String command, boolean color) {
         switch (command.toLowerCase()) {
         case "history": case "record": case "r": printHistory(history); break;
         case "pieces": case "p": Utils.printPieces(blackPiecesTaken, whitePiecesTaken); break;
             
-        case "resign": return !Utils.confirmResign();
-        case "draw": return !Utils.confirmDraw();
+        case "resign":
+            boolean resign = Utils.confirmResign();
+            if (resign) {
+                winner = !color;
+                draw = false;
+            }
+            return !resign;
+        case "draw":
+            boolean drawing = Utils.confirmDraw();
+            if (drawing)
+                draw = true;
+            return !drawing;
             
         case "help" : case "h": case "?": Utils.printHelp(); break;
         case "instructions": case "i": Utils.printInstructions(); break;

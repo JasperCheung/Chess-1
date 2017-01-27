@@ -164,16 +164,16 @@ public class Chess {
         }
     }
     //does the move for a turn; true if successful
+    //check special moves first (pawn promotion)
     private boolean turnMove(int[] from, int[] to, Piece pFrom) {
-        if (!isPosMove(from, to))
-            return false;
-        
         if (isSpecialMove(from, to)) {
             if (!isLegalSpecialMove(from, to))
                 return false;
             if (!doSpecialMove(from, to))  //failed doing move
                 return false;
-        } else if (isLegalMove(from, to)) {
+        } else if (isNormalMove(from, to)) {
+            if (!isLegalMove(from, to))
+                return false;
             setOneHistory(from, to);
             checkAddPiecesTaken(to);
             move(from, to);
@@ -186,18 +186,19 @@ public class Chess {
         return true;
     }
     
-    //~~~~~Is- and Do- possible, legal, special moves
+    //~~~~~Is- and Do- normal, special, legal, possible moves
     /*
-      Possible moves vs Legal moves vs Special moves:
-      Possible moves only get the movements and check the boundaries
-      Legal moves are possible moves but have also checked that they don't leave the king in check
+      Normal moves vs Legal moves vs Special moves:
+      Normal moves only get the movements and check the boundaries
       Special moves are exceptions to normal playing (ie. castling, en passant, and pawn promotion)
+      Legal moves are moves but have also checked that they don't leave the king in check
+      Possible moves include normal and special moves (not checked if legal)
     */
-    public boolean isPosMove(int[] from, int[] to) {
-        return Utils.contains(posMoves(from[0], from[1]), to);
+    public boolean isNormalMove(int[] from, int[] to) {
+        return Utils.contains(normalMoves(from[0], from[1]), to);
     }
     /*
-      assume possible move
+      assume is valid normal move
       legal if not checked when moved there
       returns true if legal
     */
@@ -236,18 +237,14 @@ public class Chess {
     public boolean isSpecialMove(int[] from, int[] to) {
         Piece p = board[from[0]][from[1]];
         //pawn promotion
-        if (p instanceof Pawn && p.isMoved() && isPosMove(from, to)) {
+        if (p instanceof Pawn && p.isMoved() && isNormalMove(from, to)) {
             if (to[1] == 7 || to[1] == 0)
                 return true;
         }
 
-        List<int[]> specialMoves = new ArrayList<int[]>();
-        
         int xCoord = from[0];
         int yCoord = from[1];
-        addSpecialMoves(xCoord, yCoord, specialMoves, false);
-        addSpecialMoves(xCoord, yCoord, specialMoves, true);
-        return Utils.contains(specialMoves, to);
+        return Utils.contains(specialMoves(xCoord, yCoord), to);
     }
     //assume is valid special move
     //true if legal
@@ -460,34 +457,46 @@ public class Chess {
             if (isSpecialMove(from, to)) {
                 if (isLegalSpecialMove(from, to))
                     legalMoves.add(to);
-            }
-            else if (isLegalMove(from, to))
+            } else if (isLegalMove(from, to))
                 legalMoves.add(to);
         }
 
         return legalMoves;
     }
 
-    //~~~~~Possible moves and adding special moves
-    //get all possible moves (attack and movement)
+    //~~~~~Possible moves
+    //return all possible moves (normal and special)
     public List<int[]> posMoves(int xCoord, int yCoord) {
-        List<int[]> posMoves = posMoves(xCoord, yCoord, true);
-        posMoves.addAll(posMoves(xCoord, yCoord, false));
+        List<int[]> posMoves = normalMoves(xCoord, yCoord);
+        posMoves.addAll(specialMoves(xCoord, yCoord));
         return posMoves;
     }
+    public List<int[]> posMoves(int xCoord, int yCoord, boolean attack) {
+        List<int[]> posMoves = normalMoves(xCoord, yCoord, attack);
+        posMoves.addAll(specialMoves(xCoord, yCoord, attack));
+        return posMoves;
+    }
+    
+    //~~~~~Normal moves
+    //return all normal moves
+    public List<int[]> normalMoves(int xCoord, int yCoord) {
+        List<int[]> normalMoves = normalMoves(xCoord, yCoord, true);
+        normalMoves.addAll(normalMoves(xCoord, yCoord, false));
+        return normalMoves;
+    }
     /*
-      get possible move from coordinate (piece) (either movement or attack)
+      get normal moves from coordinate (piece) (either movement or attack)
       for movement: only include when moving to empty space
       for attack: only include when hit piece
       returns list of absolute coordinates
     */
-    public List<int[]> posMoves(int xCoord, int yCoord, boolean attack) {
+    public List<int[]> normalMoves(int xCoord, int yCoord, boolean attack) {
         Piece p = board[xCoord][yCoord];
         Movement m = p.getMovements();
         if (attack && p.getMovements() != p.getAttacks())  //movements and attacks don't point to same
             m = p.getAttacks();
         
-        List<int[]> posMoves = new ArrayList<int[]>();
+        List<int[]> normalMoves = new ArrayList<int[]>();
 
         //go through horiz/vert/diags by using differences
         //keep going w/ differences until piece or border reached
@@ -504,9 +513,9 @@ public class Chess {
                                     {1, -1}, {1, 1} };
             differences.addAll(Arrays.asList(differenceD));
         }
-        //add all possible movements for differences
+        //add all normal movements for differences
         for (int[] diffxy : differences)
-            posMoves(xCoord, yCoord, posMoves, diffxy[0], diffxy[1], attack);
+            normalMoves(xCoord, yCoord, normalMoves, diffxy[0], diffxy[1], attack);
 
         //add other movements
         for (int[] move : m.getOtherMov()) {
@@ -516,28 +525,25 @@ public class Chess {
                 atX = xCoord - move[0];
                 atY = yCoord - move[1];
             }
-            checkAddPosMoves(xCoord, yCoord, posMoves, atX, atY, attack); //keep checking no matter return boolean
+            checkAddMove(xCoord, yCoord, normalMoves, atX, atY, attack); //keep checking no matter return boolean
         }
 
-        //add special moves
-        addSpecialMoves(xCoord, yCoord, posMoves, attack);
-        
-        return posMoves;
+        return normalMoves;
     }
-    //add possible movements given a dx and dy (for horiz/vert/diags)
-    public void posMoves(int xCoord, int yCoord, List<int[]> posMoves, int dx, int dy, boolean attack) {
+    //add moves given a dx and dy (for horiz/vert/diags)
+    public void normalMoves(int xCoord, int yCoord, List<int[]> normalMoves, int dx, int dy, boolean attack) {
         int atX = xCoord;
         int atY = yCoord;
         for (;;) {
             atX += dx;
             atY += dy;
-            if (!checkAddPosMoves(xCoord, yCoord, posMoves, atX, atY, attack)) //false, don't check anymore
+            if (!checkAddMove(xCoord, yCoord, normalMoves, atX, atY, attack)) //false, don't check anymore
                 break;
         }
     }
-    //try to add possible move given coordinates.
+    //try to add move given coordinates.
     //return false if out of border or there was piece there
-    public boolean checkAddPosMoves(int xCoord, int yCoord, List<int[]> posMoves, int x, int y, boolean attack) {
+    public boolean checkAddMove(int xCoord, int yCoord, List<int[]> normalMoves, int x, int y, boolean attack) {
         if (x < 0 || x > 7 || y < 0 || y > 7)
             return false;
         
@@ -547,76 +553,85 @@ public class Chess {
                 Piece from = board[xCoord][yCoord];
                 if (to.isWhite() != from.isWhite()) { //different colors
                     int[] toCoord = {x, y};
-                    posMoves.add(toCoord);
+                    normalMoves.add(toCoord);
                 }
             }
             return false;
         }
         if (!attack) {
             int[] toCoord = {x, y};
-            posMoves.add(toCoord);
+            normalMoves.add(toCoord);
         }
         return true;
     }
 
-    public void addSpecialMoves(int xCoord, int yCoord, List<int[]> posMoves, boolean attack) {
+    //~~~~~Special Moves
+    //return all special moves
+    public List<int[]> specialMoves(int xCoord, int yCoord) {
+        List<int[]> specialMoves = specialMoves(xCoord, yCoord, true);
+        specialMoves.addAll(specialMoves(xCoord, yCoord, false));
+        return specialMoves;
+    }
+    public List<int[]> specialMoves(int xCoord, int yCoord, boolean attack) {
         Piece p = board[xCoord][yCoord];
+
+        List<int[]> specialMoves = new ArrayList<int[]>();
         
         if (p instanceof Pawn) {
             //pawn 2-square movement
-            if (!attack && !p.isMoved()) {
-                int dy = -1;
-                if (p.isWhite())
-                    dy = 1;
-                
-                //no piece 1 and 2 squares ahead
-                Piece at1 = board[xCoord][yCoord + dy];
-                if (at1 != null)
-                    return;
-                
-                dy *= 2;
-                Piece at2 = board[xCoord][yCoord + dy];
-                if (at2 != null)
-                    return;
-                
-                int[] to = {xCoord, yCoord + dy};
-                posMoves.add(to);
-            }
+            if (!attack && !p.isMoved())
+                addPawnSquareMovement(xCoord, yCoord, specialMoves, p);
 
             //en passant
-            if (attack && p.isMoved()) {
-                //check lastMove (pawn to left or right && did double-move)
-                int[] lastFrom = lastMove[0];
-                int[] lastTo = lastMove[1];
-                Piece atLastTo = board[lastTo[0]][lastTo[1]];
-                if (!(atLastTo instanceof Pawn) || lastTo[1] != yCoord || Math.abs(lastFrom[1] - lastTo[1]) != 2 || Math.abs(lastTo[0] - xCoord) != 1)
-                    return;
-
-                int dy = -1;
-                if (p.isWhite())
-                    dy = 1;
-                
-                int[] to = {lastTo[0], yCoord + dy};
-                posMoves.add(to);
-            }
+            if (attack && p.isMoved())
+                addEnPassant(xCoord, yCoord, specialMoves, p);
         }
         
         //castling
-        addCastling(xCoord, yCoord, posMoves, attack);
+        if (!attack && p instanceof King && !p.isMoved()) {
+            addCastling(xCoord, yCoord, specialMoves, p, 2);
+            addCastling(xCoord, yCoord, specialMoves, p, 6);
+        }
+        
+        return specialMoves;
+    }
+    private void addPawnSquareMovement(int xCoord, int yCoord, List<int[]> specialMoves, Piece p) {
+        int dy = -1;
+        if (p.isWhite())
+            dy = 1;
+        
+        //no piece 1 and 2 squares ahead
+        Piece at1 = board[xCoord][yCoord + dy];
+        if (at1 != null)
+            return;
+        
+        dy *= 2;
+        Piece at2 = board[xCoord][yCoord + dy];
+        if (at2 != null)
+            return;
+        
+        int[] to = {xCoord, yCoord + dy};
+        specialMoves.add(to);
+    }
+    private void addEnPassant(int xCoord, int yCoord, List<int[]> specialMoves, Piece p) {
+        //check lastMove (pawn to left or right && did double-move)
+        int[] lastFrom = lastMove[0];
+        int[] lastTo = lastMove[1];
+        Piece atLastTo = board[lastTo[0]][lastTo[1]];
+        if (!(atLastTo instanceof Pawn) || lastTo[1] != yCoord || Math.abs(lastFrom[1] - lastTo[1]) != 2 || Math.abs(lastTo[0] - xCoord) != 1)
+            return;
+
+        int dy = -1;
+        if (p.isWhite())
+            dy = 1;
+        
+        int[] to = {lastTo[0], yCoord + dy};
+        specialMoves.add(to);
     }
     //from: coordinate of King
     //to: coordinate of Rook
-    private void addCastling(int xCoord, int yCoord, List<int[]> posMoves, boolean attack) {
-        Piece p = board[xCoord][yCoord];
-        
-        if (attack || !(p instanceof King) || p.isMoved())
-            return;
-
-        addCastling(xCoord, yCoord, posMoves, p, 2);
-        addCastling(xCoord, yCoord, posMoves, p, 6);
-    }
     //with the end spot for the king, add the castling if possible
-    private void addCastling(int xCoord, int yCoord, List<int[]> posMoves, Piece p, int kingEnd) {
+    private void addCastling(int xCoord, int yCoord, List<int[]> specialMoves, Piece p, int kingEnd) {
         //all spots from king to end spot are empty (exclude king)
         if (!isEmptyBetween(kingEnd, yCoord, xCoord))
             return;
@@ -647,7 +662,7 @@ public class Chess {
             return;
 
         int[] to = {xRook, yCoord};
-        posMoves.add(to);
+        specialMoves.add(to);
     }
     private boolean isEmptyBetween(int xStart, int yCoord, int xEnd) {
         //include xStart, exclude xEnd

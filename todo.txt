@@ -1,6 +1,6 @@
 Chess - Fabiha Ahmed, Kenny Chen, Jasper Cheung
 APCS1 pd 5
-2017-01-22
+2017-01-27
 
 Chess TODO list
 
@@ -54,7 +54,7 @@ Version 4: commands
    g. quit (q, exit, e)
 
 -------------------------------
-End
+Next
 
 Version 5: variants
 1. Variants(Progressive chess, Chess960, Atomic chess, etc.)

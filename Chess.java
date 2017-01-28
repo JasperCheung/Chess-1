@@ -297,9 +297,9 @@ public class Chess {
                 end = temp;
             }
             for (int atX = start; atX <= end; atX += 1) {
-                //do move, check, and undo
+                //use isLegalMove (for 960, rook can be one of the squares)
                 int[] toSpot = {atX, from[1]};
-                boolean legal = simulateLegalMove(from, toSpot);
+                boolean legal = isLegalMove(from, toSpot);
                 if (!legal)
                     return false;
             }
@@ -358,16 +358,18 @@ public class Chess {
             }
             int[] end = {kingEnd, from[1]};
             
-            //move king
-            move(from, end);
-
+            Piece rook = board[to[0]][to[1]];
+            
             //get rook end position
             int[] toRook = {kingEnd + dx, from[1]};
-            
-            //move rook
-            Piece rook = board[to[0]][to[1]];
+
+            //move pieces
+            move(from, end);
+            if (end[0] != to[0])
+                move(to, toRook);
+            else   //in 960, king and rook can have switched places; manually set
+                board[kingEnd + dx][from[1]] = rook;
             rook.moved();
-            move(to, toRook);
         }
 
         return true;
@@ -641,10 +643,6 @@ public class Chess {
     //to: coordinate of Rook
     //with the end spot for the king, add the castling if possible
     private void addCastling(int xCoord, int yCoord, List<int[]> specialMoves, Piece p, int kingEnd) {
-        //all spots from king to end spot are empty (exclude king)
-        if (!isEmptyBetween(kingEnd, yCoord, xCoord))
-            return;
-
         //get rook
         int xRook = -1;
         int dx = 1;
@@ -665,11 +663,22 @@ public class Chess {
         Piece rook = board[xRook][yCoord];
         if (rook.isMoved())
             return;
-        
-        //all spots from rook to end spot are empty (exclude rook)
-        if (!isEmptyBetween(kingEnd, yCoord, xRook))
-            return;
 
+        //all spots from king to end spot are empty (exclude king and rook (for 960))
+        board[xRook][yCoord] = null;
+        boolean empty = isEmptyBetween(kingEnd, yCoord, xCoord);
+        board[xRook][yCoord] = rook;
+        if (!empty)
+            return;
+        
+        //all spots from rook to end spot are empty (exclude rook and king (for 960))
+        Piece king = board[xCoord][yCoord];
+        board[xCoord][yCoord] = null;
+        empty = isEmptyBetween(kingEnd, yCoord, xRook);
+        board[xCoord][yCoord] = king;
+        if (!empty)
+            return;
+        
         int[] to = {xRook, yCoord};
         specialMoves.add(to);
     }

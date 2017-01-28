@@ -157,7 +157,7 @@ public class Utils {
     }
 
     //~~~~~place
-    //puts el at the numth free spot (marked by nulls) in position
+    //puts el at the numth free spot (marked by nulls) in arr
     public static void place(String[] arr, String el, int num) {
         int freeSpot = 0;
         for (int i = 0; i < arr.length; i++) {

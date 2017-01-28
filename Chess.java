@@ -158,14 +158,17 @@ public class Chess {
             int[] to = Utils.coordToInts(move);
             
             //does move if legal, otherwise repeat
-            if (turnMove(from, to, p))
+            if (turnMove(from, to)) {
+                updateLastMove(from, to);
+                p.moved();
                 break;
+            }
             System.out.println("Invalid move");
         }
     }
     //does the move for a turn; true if successful
     //check special moves first (pawn promotion)
-    private boolean turnMove(int[] from, int[] to, Piece pFrom) {
+    private boolean turnMove(int[] from, int[] to) {
         if (isSpecialMove(from, to)) {
             if (!isLegalSpecialMove(from, to))
                 return false;
@@ -180,9 +183,6 @@ public class Chess {
         } else {
             return false;
         }
-        
-        updateLastMove(from, to);
-        pFrom.moved();
         return true;
     }
     
@@ -304,7 +304,7 @@ public class Chess {
                 String temp = historyString(from, to);
                 
                 //pawn promotion
-                if (!promotePawn(from))
+                if (!promotePawn(from, p))
                     return false;
                 Piece promoted = board[from[0]][from[1]];
                 
@@ -357,26 +357,19 @@ public class Chess {
     }
     //assume valid pawn coordinate
     //true if successful
-    private boolean promotePawn(int[] coord) {
+    private boolean promotePawn(int[] coord, Piece pawn) {
         String s = "Promote pawn!\n";
         s += "Enter piece name you want to promote to ('q', 'r', 'b', or 'n'):";
         System.out.println(s);
 
         String name = Keyboard.readString().toLowerCase();
-
-        Piece pawn = board[coord[0]][coord[1]];
-        boolean color = pawn.isWhite();
-        Piece promoted;
-        
         switch (name) {
-        case "q": promoted = new Queen(color); break;
-        case "r": promoted = new Rook(color); break;
-        case "b": promoted = new Bishop(color); break;
-        case "n": promoted = new Knight(color); break;
+        case "q": case "r": case "b": case "n": break;
         default: System.out.println("Unrecognized name of piece\n"); return false;
         }
-
-        board[coord[0]][coord[1]] = promoted;
+        
+        boolean color = pawn.isWhite();
+        board[coord[0]][coord[1]] = Utils.stringToPiece(name, color);
         
         return true;
     }

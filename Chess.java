@@ -35,6 +35,7 @@ public class Chess {
 
         lastMove = new int[2][2];
         history = new ArrayList<String>();
+        oneHistory = "";
         
         blackPiecesTaken = new ArrayList<Piece>();
         whitePiecesTaken = new ArrayList<Piece>();
@@ -92,6 +93,10 @@ public class Chess {
             System.out.println();
 
             printBoard();
+
+            //resign and draw end early
+            if (!continuePlaying)
+                break;
             
             boolean check = inCheck(!color);
             boolean noLegalMoves = noLegalMoves(!color);

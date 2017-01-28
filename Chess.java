@@ -107,7 +107,7 @@ public class Chess {
                 }
                 continuePlaying = false;
             } else if (check) {
-                System.out.println("In check!");
+                System.out.println("Check!");
                 oneHistory += "+";
             }
 
@@ -138,14 +138,31 @@ public class Chess {
             }
             int[] from = Utils.coordToInts(input);
 
-            //check there is own piece at coord
+            //check if there is piece and own piece at coord
             Piece p = board[from[0]][from[1]];
-            if (p == null || p.isWhite() != color) {
+            if (p == null) {
+                System.out.println("No piece at coordinate");
+                continue;
+            }
+            if (p.isWhite() != color) {
                 System.out.println("Invalid piece at coordinate");
                 continue;
             }
+            
+            //check if has any legal moves
+            List<int[]> legalMoves = legalMoves(from[0], from[1]);
+            if (legalMoves.size() == 0) {
+                System.out.println("No legal move for R at coordinate");
+                continue;
+            }
+            
             System.out.print(p + " at " + input.substring(0, 1) + input.substring(1, 2));
-
+            
+            //print out legal moves
+            System.out.print("; legal moves: ");
+            for (int[] move : legalMoves)
+                System.out.print(Utils.coordToString(move) + " ");
+            
             //get input again for move
             System.out.print("\nEnter move:\t");
             String move = Keyboard.readString();

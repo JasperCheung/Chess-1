@@ -164,5 +164,8 @@ public class Test {
         c.turn(true);
         c.printBoard();
         */
+        
+        Chess960 c9 = new Chess960();
+        c9.play();
     }
 }

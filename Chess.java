@@ -7,6 +7,9 @@ public class Chess {
     //(white left rook is (0, 0))
     private Piece[][] board;
 
+    //back row position
+    protected String[] position = {"r", "n", "b", "q", "k", "b", "n", "r"};
+    
     //last move: from and to
     private int[][] lastMove;
     
@@ -45,7 +48,7 @@ public class Chess {
 
     //~~~~~Initializing board
     //Loops through the board/ [][] and populates
-    private void populateBoard() {
+    protected void populateBoard() {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 setBoardPiece(x, y);
@@ -62,17 +65,9 @@ public class Chess {
         if (y == 0 || y == 7) {
             // white = true, black = false
             boolean color = y == 0;
+            String atPos = position[x];
             
-            if (x == 0 || x == 7)
-                p = new Rook(color);
-            else if (x == 1 || x == 6)
-                p = new Knight(color);
-            else if (x == 2 || x == 5)
-                p = new Bishop(color);
-            else if (x == 3)
-                p = new Queen(color);
-            else // x == 4
-                p = new King(color);
+            p = Utils.stringToPiece(atPos, color);
             
         } else { //y == 1 or 6
             boolean color = y == 1;

@@ -41,20 +41,33 @@ public class Utils {
         int number = coord[1];
         return letters.substring(letter, letter + 1) + numbers.substring(number, number + 1);
     }
-    
-    //return true if valid command
-    public static boolean validCommand(String command) {
-        return Arrays.asList(commands).contains(command.toLowerCase());
-    }
 
-    //~~~color to string
+    //~~~~~Other X to Y
     public static String colorToString(boolean color) {
         if (color)
             return "White";
         else
             return "Black";
     }
+
+    //assume valid s
+    public static Piece stringToPiece(String s, boolean color) {
+        switch (s.toLowerCase()) {
+        case "r": return new Rook(color);
+        case "n": return new Knight(color);
+        case "b": return new Bishop(color);
+        case "q": return new Queen(color);
+        case "k": return new King(color);
+        default: return null;
+        }
+    }
+    
     //~~~~~~Commands
+    //return true if valid command
+    public static boolean validCommand(String command) {
+        return Arrays.asList(commands).contains(command.toLowerCase());
+    }
+    
     public static void printPieces(List<Piece> blackPiecesTaken, List<Piece> whitePiecesTaken) {
         String s = "Black pieces taken: ";
         for (Piece p : blackPiecesTaken)
@@ -143,6 +156,21 @@ public class Utils {
         return true;
     }
 
+    //~~~~~place
+    //puts el at the numth free spot (marked by nulls) in position
+    public static void place(String[] arr, String el, int num) {
+        int freeSpot = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == null) {
+                if (freeSpot == num) {
+                    arr[i] = el;
+                    break;
+                }
+                freeSpot++;
+            }
+        }
+    }
+    
     //~~~~~printBoard
     //prints board
     public static void printBoard(Piece[][] board, int length, int width) {

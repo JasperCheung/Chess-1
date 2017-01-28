@@ -15,10 +15,18 @@ public class Woo {
         
         Utils.printInstructions();
         
-        System.out.println("Type anything to begin:");
-        Keyboard.readString();
-        System.out.print("\n");
-        Chess c = new Chess();
+        String s = "What would you like to play?\n";
+        s += "\t1: Normal chess\n";
+        s += "\t2: Chess960";
+        System.out.println(s);
+
+        Chess c;
+        int i = Keyboard.readInt();
+        if (i == 2)
+            c = new Chess960();
+        else
+            c = new Chess();
+        System.out.println();
         c.play();
     }
 }
